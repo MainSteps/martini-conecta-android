@@ -1,0 +1,39 @@
+name: Error
+description: Registrar un comportamiento incorrecto reproducible
+title: "[Bug] "
+labels: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Comportamiento observado
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Entorno
+      description: Rama, commit, emulador o dispositivo y versión de Android.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidencia
+      description: Capturas, video o mensajes de error sin datos sensibles.
