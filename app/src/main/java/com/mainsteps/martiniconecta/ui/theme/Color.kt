@@ -1,4 +1,4 @@
-package cl.duoc.martiniconecta.ui.theme
+package com.mainsteps.martiniconecta.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

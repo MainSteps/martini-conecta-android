@@ -1,4 +1,4 @@
-package cl.duoc.martiniconecta
+package com.mainsteps.martiniconecta
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import cl.duoc.martiniconecta.ui.theme.MartiniConecta_Grupo15Theme
+import com.mainsteps.martiniconecta.ui.theme.MartiniConecta_Grupo15Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "cl.duoc.martiniconecta"
+    namespace = "com.mainsteps.martiniconecta"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "cl.duoc.martiniconecta"
+        applicationId = "com.mainsteps.martiniconecta"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

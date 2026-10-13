@@ -1,4 +1,4 @@
-package cl.duoc.martiniconecta
+package com.mainsteps.martiniconecta
 
 import org.junit.Test
 
