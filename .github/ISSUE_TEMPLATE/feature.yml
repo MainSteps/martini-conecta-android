@@ -1,43 +1,26 @@
 name: Funcionalidad
-description: Implementar una tarea funcional o técnica del proyecto
+description: Tarea ligada a un indicador de la pauta
 title: "[Feature] "
 labels: []
 body:
-  - type: textarea
-    id: objective
+  - type: input
+    id: ie
     attributes:
-      label: Objetivo
-      description: ¿Qué resultado verificable debe producir esta tarea?
-    validations:
-      required: true
-  - type: textarea
-    id: scope
-    attributes:
-      label: Alcance
-      description: Incluye lo que forma parte de la tarea y sus límites.
+      label: IE de la pauta
+      placeholder: "2.1.2 (15 %)"
     validations:
       required: true
   - type: textarea
     id: acceptance
     attributes:
       label: Criterios de aceptación
-      description: Lista de condiciones observables para considerarla terminada.
       placeholder: |
         - [ ] Criterio 1
         - [ ] Criterio 2
     validations:
       required: true
-  - type: textarea
+  - type: input
     id: dependencies
     attributes:
-      label: Dependencias o bloqueos
-      description: Issues, contratos o decisiones necesarias. Escribe "Ninguna" si no aplica.
-    validations:
-      required: true
-  - type: textarea
-    id: evidence
-    attributes:
-      label: Verificación y evidencia
-      description: Compilación, pruebas, capturas o recorrido que deberá adjuntarse al pull request.
-    validations:
-      required: true
+      label: Dependencias
+      placeholder: "Ninguna"

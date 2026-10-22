@@ -12,10 +12,10 @@ El PR [#20](https://github.com/MainSteps/martini-conecta-android/pull/20) (abier
 
 ## Reglas de trabajo
 
-- Una issue, una rama (`feat/<n>-…`, `fix/`, `docs/`, `test/`, `chore/`) y un pull request. Revisa la otra persona. Cada integrante commitea desde su cuenta (`MainSteps`, `MatiasU-24`).
+- Una issue, una rama (`feat/<n>-…`, `fix/`, `docs/`, `chore/`) y un pull request con CI en verde. Revisa la otra persona y se fusiona con squash. Cada integrante commitea desde su cuenta (`MainSteps`, `MatiasU-24`).
 - No amplíes el stack: sin login, backend, nube, analítica ni material corporativo no autorizado. Solo datos ficticios.
 - La validación y las reglas de negocio viven en el ViewModel. El Composable pinta estado y emite eventos.
-- Congelamiento la noche del 30 de octubre de 2026. Subida del encargo el 31 de octubre de 2026 a las 15:00 (hora de Santiago). Después de esa entrega no se modifica el repositorio: un cambio, aunque sea mínimo, puede calificarse con 1,0.
+- Subida del encargo el 31 de octubre de 2026 a las 15:00 (hora de Santiago). Después de esa entrega no se modifica el repositorio: un cambio, aunque sea mínimo, puede calificarse con 1,0.
 
 ## Contexto
 

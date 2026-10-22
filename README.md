@@ -29,7 +29,7 @@ Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, StateFlow, R
 
 La planificación se gestiona con GitHub Issues y GitHub Projects. Cada tarea se desarrolla en una rama propia y se integra mediante pull request con revisión cruzada. No se realizan cambios directos en `main`.
 
-Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para las reglas de ramas, commits, revisión y definición de terminado.
+Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para las reglas de ramas, commits, y revisión.
 
 ## Contexto
 
