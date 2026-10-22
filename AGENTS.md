@@ -6,7 +6,7 @@ El profesor permite usar IA en el desarrollo y el equipo está de acuerdo. El c�
 
 ## Stack y arquitectura
 
-Kotlin, Jetpack Compose y Material 3, con MVVM. En `main` el módulo `app` (`com.mainsteps.martiniconecta`, minSdk 24, targetSdk 37) tiene el tema de plantilla y los paquetes vacíos `model/`, `repository/` y `viewmodel/`. Room, ViewModel, StateFlow, cámara, galería y Window Size Classes están acordados en issues, pero no hay dependencias ni código de eso en `main`.
+Kotlin, Jetpack Compose y Material 3, con MVVM. En `main` el módulo `app` (`com.mainsteps.martiniconecta`, minSdk 24, targetSdk 37) tiene el tema de plantilla y los paquetes vacíos `model/`, `repository/` y `viewmodel/`. Room, ViewModel, StateFlow, cámara, galería y compartir con Intent están acordados en issues, pero no hay dependencias ni código de eso en `main`.
 
 El PR [#20](https://github.com/MainSteps/martini-conecta-android/pull/20) (abierto, sin fusionar) agrega Navigation Compose, la clase sellada `Routes` y esqueletos de Onboarding, Inicio, Explorar, Detalle, Favoritos y Perfil. No lo trates como código de `main` ni abras un segundo grafo de rutas.
 

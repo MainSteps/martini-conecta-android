@@ -8,11 +8,11 @@ Martini Conecta es el MVP Android del grupo 15 para el caso Master Martini. Cent
 |---|---|---|
 | Configuración inicial | Nombre, correo, tipo y tamaño de negocio e intereses. Valida cada campo. | Formulario, StateFlow, Room |
 | Inicio | Saludo, categorías y destacados según los intereses guardados. | Material 3 y estado |
-| Exploración | Lista ficticia, búsqueda y filtros por categoría o formato. | Estado, listas, adaptabilidad |
-| Detalle | Título, descripción, categoría, formato, duración o dificultad, y favorito. | Navegación y animación |
+| Exploración | Lista ficticia, búsqueda y filtros por categoría o formato. | Estado y listas |
+| Detalle | Título, descripción, categoría, formato, duración o dificultad, favorito y compartir. | Navegación, animación y recurso nativo (Intent) |
 | Favoritos | Alta y baja persistidas. Estado vacío que explica cómo guardar. | Room y repositorio |
 | Perfil | Editar datos e intereses. Foto desde cámara o galería. | Validación, permisos, recursos nativos |
-| Adaptabilidad | Otra disposición en compacto, mediano y expandido. | Window Size Classes |
+| Sugerir contenido | Tema, categoría, formato y comentario. Valida cada campo con error e ícono. Se guarda en local. | Segundo formulario, validación desacoplada |
 | Animaciones | Feedback al marcar favorito, al validar, en mensajes de éxito o al cambiar el contenido. | Retroalimentación visual |
 
 En el PR #20 esas pantallas son esqueletos con texto de relleno. La barra inferior cubre Inicio, Explorar, Favoritos y Perfil. Onboarding y Detalle van sin barra. El recorrido previsto es: primer ingreso al onboarding, validación, guardado local, inicio personalizado, exploración, detalle, favorito, favoritos que sobreviven al reinicio, y perfil con imagen.
