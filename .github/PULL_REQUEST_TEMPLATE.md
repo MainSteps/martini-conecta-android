@@ -13,12 +13,10 @@ Closes #
 - [ ] Compilación local
 - [ ] Pruebas aplicables
 - [ ] Recorrido manual del flujo afectado
-- [ ] Revisión en tamaño compacto
-- [ ] Revisión en tamaño mediano o expandido, si aplica
 
 ## Evidencia visual
 
-<!-- Adjunta capturas o video cuando cambie la interfaz. -->
+<!-- Verificación en emulador; captura opcional. -->
 
 ## Lista de control
 
