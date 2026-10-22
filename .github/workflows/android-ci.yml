@@ -1,0 +1,46 @@
+# Integración continua de Martini Conecta (issue #16, IE 2.3.2).
+# En cada pull request hacia main compila la app y corre pruebas unitarias;
+# GitHub muestra el resultado como check en la pestaña del PR.
+
+name: Android CI
+
+# Solo se dispara al abrir o actualizar un PR cuyo destino es main.
+on:
+  pull_request:
+    branches: [main]
+
+# El job solo necesita leer el código del repositorio.
+permissions:
+  contents: read
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      # Descarga el código del PR (commit de prueba que GitHub arma para el job).
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      # AGP 9.4.1 (gradle/libs.versions.toml) exige JDK 17 para ejecutar Gradle.
+      # Es distinto del Java 11 del bytecode en app/build.gradle.kts (compileOptions).
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          # Guarda dependencias Gradle entre ejecuciones para acortar el build.
+          cache: gradle
+
+      # compileSdk es API 37; el runner no trae esa plataforma por defecto.
+      # build-tools 36.0.0 es el default recomendado para AGP 9.4.
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platforms;android-37
+            build-tools;36.0.0
+
+      # assembleDebug: APK de depuración. testDebugUnitTest: JUnit en JVM, sin emulador.
+      # --no-daemon: en CI no conviene dejar el daemon de Gradle en el runner efímero.
+      - name: Compilar y probar
+        run: ./gradlew assembleDebug testDebugUnitTest --no-daemon
