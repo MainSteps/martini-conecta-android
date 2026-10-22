@@ -1,0 +1,9 @@
+# Artefactos generados e índices locales. No participa del build de Gradle.
+build/
+.gradle/
+.idea/
+*.iml
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/

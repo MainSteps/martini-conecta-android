@@ -1,0 +1,34 @@
+---
+description: Navigation Compose con la clase sellada Routes, NavHost y barra inferior de Martini Conecta.
+globs: "**/navigation/**/*.kt,**/MainActivity.kt"
+alwaysApply: false
+---
+
+# Navegación
+
+La referencia viva es el PR #20 (`feat/4-navegacion-esqueletos`), todavía sin fusionar. Si trabajas sobre `main` antes de ese merge, no copies un segundo grafo: espera esa base o parte de esa rama según indique la issue.
+
+## Rutas
+
+Hay una sola clase sellada, `com.mainsteps.martiniconecta.navigation.Routes`, con `route: String`:
+
+- `Onboarding` → `onboarding`
+- `Inicio` → `inicio`
+- `Explorar` → `explorar`
+- `Favoritos` → `favoritos`
+- `Perfil` → `perfil`
+- `Detalle` → `detalle/{itemId}`, con `createRoute(itemId)`
+
+Extiende esa clase si aparece una ruta nueva. No declares strings de ruta sueltos en pantallas ni migres a otro esquema de navegación en este encargo.
+
+## Grafo
+
+`AppNavigation` es el único `NavHost`. Destino inicial: Onboarding si no hay perfil, Inicio si lo hay. En el PR #20 `MainActivity` pasa `hasProfile = false` fijo; cuando el perfil esté persistido, ese valor sale del estado, no de un literal.
+
+- Continuar en el onboarding abre Inicio y saca el onboarding del historial (`popUpTo` inclusivo).
+- La barra inferior muestra Inicio, Explorar, Favoritos y Perfil. Al cambiar de pestaña: `popUpTo(Inicio)` con `saveState`, `launchSingleTop` y `restoreState`.
+- Onboarding y Detalle no muestran la barra.
+- Explorar abre Detalle con el `itemId`. Atrás vuelve a Explorar.
+- Los íconos de letra (`I`, `E`, `F`, `P`) son del esqueleto. No los presentes como UI final.
+
+Las pantallas reciben callbacks (`onContinue`, `onOpenDetail`, `onBack`). No les pases el `NavController`.

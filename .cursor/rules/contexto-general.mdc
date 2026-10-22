@@ -1,0 +1,31 @@
+---
+description: Contexto obligatorio de Martini Conecta (caso, alcance, MVVM y entrega). Léelo antes de editar el repo.
+alwaysApply: true
+---
+
+# Martini Conecta
+
+MVP Android académico, grupo 15, DSY1105 Duoc UC. Caso: Master Martini Chile SPA (contenidos técnicos para clientes gastronómicos). Equipo: Diego Alonso Pazos Atarama (`MainSteps`) y Matías Urrejola (`MatiasU-24`).
+
+Stack acordado: Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, StateFlow, Room, Window Size Classes, Activity Result APIs y FileProvider. Sin Hilt, Koin, Retrofit, Firebase, DataStore ni backend.
+
+`main` hoy es la plantilla Compose más los paquetes vacíos `model/`, `repository/` y `viewmodel/`. El PR #20 (abierto) trae rutas y esqueletos; no está fusionado. No des por hecha una capa que no esté en el árbol que estás editando.
+
+## Cómo trabajar
+
+- Lee `docs/contexto/README.md` y la issue asignada antes de escribir código. No reasignes issues.
+- Una issue, una rama, un PR. Revisión de la otra persona. Commits desde la cuenta del responsable.
+- Validación y reglas en el ViewModel. UI en español, datos ficticios, nada de material corporativo sin autorización.
+- Versiones nuevas solo en `gradle/libs.versions.toml`, y solo si la issue lo pide.
+- No edites el repo después del congelamiento (noche del 30-10-2026). La subida es el 31-10-2026 a las 15:00, hora de Santiago.
+
+## Pack
+
+- Caso: `docs/contexto/caso.md`
+- Alcance y pantallas: `docs/contexto/alcance-y-pantallas.md`
+- Arquitectura real y acordada: `docs/contexto/arquitectura.md`
+- Pauta del Encargo: `docs/contexto/pauta-encargo.md`
+- Flujo Git: `docs/contexto/flujo-de-trabajo.md`
+- Issues abiertas: `docs/contexto/issues.md`
+
+Reglas por archivo: Kotlin/Compose, navegación, Room, recursos nativos, adaptabilidad y flujo Git en `.cursor/rules/`.

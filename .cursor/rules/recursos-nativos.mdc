@@ -1,0 +1,26 @@
+---
+description: Cámara y galería del perfil con Activity Result APIs y FileProvider.
+globs: "**/AndroidManifest.xml,**/res/xml/**/*.xml,**/ui/screens/Perfil*.kt,**/ui/screens/Onboarding*.kt"
+alwaysApply: false
+---
+
+# Cámara y galería
+
+Los dos recursos nativos del encargo son cámara y galería, en el perfil (issue #12, Matías). No sumes GPS, contactos ni micrófono.
+
+## Contratos
+
+Usa Activity Result APIs (`rememberLauncherForActivityResult`), no `startActivityForResult`.
+
+- Galería: un contrato que devuelva un URI (`PickVisualMedia` o `GetContent`). `activity-compose` 1.8.0 ya está en el catálogo.
+- Cámara: `TakePicture` sobre un URI de contenido creado con `FileProvider`. El archivo temporal vive en el espacio de la app. No publiques un `file://` ni una ruta absoluta.
+
+Declara el `provider` y el XML de rutas solo cuando implementes esta issue. Permisos mínimos: `CAMERA` para capturar. No pidas acceso amplio al almacenamiento si el contrato de galería entrega el URI. En minSdk 24 el permiso tiene que declararse y pedirse en tiempo de ejecución.
+
+## Comportamiento
+
+- Aceptar: la imagen se ve en el perfil y se conserva de forma coherente con el resto del perfil (el URI o la copia local pasan por el repositorio, no quedan solo en un `remember` que se pierde al rotar).
+- Cancelar: la pantalla sigue abierta, sin excepción.
+- Permiso denegado: un mensaje dice qué pasó y cómo seguir sin foto. No cierres la actividad.
+
+La UI muestra la foto con un tamaño estable (recorte o borde coherente con Material 3). El Composable no resuelve la autoridad del `FileProvider` a mano: eso queda en un helper chico y localizable del flujo de perfil.
