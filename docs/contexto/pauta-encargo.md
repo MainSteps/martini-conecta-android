@@ -36,7 +36,7 @@ El indicador de más peso es la colaboración (20 %). La evidencia tiene que acu
 - Carpeta del proyecto (`app`, Gradle, etc.).
 - `README.md` con descripción, nombres, funcionalidades implementadas y pasos para ejecutar. El README actual describe el propósito y el stack previsto; al cerrar la issue #17 tiene que describir lo que realmente quedó implementado.
 - Commits técnicos, repartidos entre las dos cuentas. Sin mensajes vacíos (“avance”, “listo”).
-- Planificación en GitHub Projects, como herramienta similar a Trello (la pauta admite el equivalente). El informe del grupo registra que el profesor indicó que Trello no es obligatorio. No se mantiene un segundo tablero.
+- Planificación en el [GitHub Project de MainSteps](https://github.com/users/MainSteps/projects/2), como herramienta similar a Trello (la pauta admite el equivalente). El informe del grupo registra que el profesor indicó que Trello no es obligatorio. No se mantiene un segundo tablero. El Project es de usuario; conviene vincularlo al repositorio.
 - Un solo integrante sube el código al enlace grupal del AVA. El informe asigna esa subida a Diego. Cada uno activa además el enlace individual con nombre, apellido, número de equipo y nombre de la aplicación. Esos enlaces no están en este repositorio.
 - SHA del commit congelado, anotado en la entrega. Ningún push posterior de ninguno de los dos.
 

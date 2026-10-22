@@ -2,7 +2,7 @@
 
 Mapa leído en GitHub el 22 de octubre de 2026. Dieciséis issues abiertas (#3 a #18) y dos cerradas (#1 y #2). El indicador principal es el de la rúbrica del Encargo (Parcial 2). Varias issues también empujan otro indicador; la tabla marca el que la propia issue declara y, si hace falta, el secundario.
 
-No hay hitos (milestones). Los estados del tablero no se pudieron leer: no apareció un GitHub Project vinculado al repositorio.
+No hay hitos (milestones). El tablero es el [GitHub Project de MainSteps](https://github.com/users/MainSteps/projects/2). Es un Project de usuario y no está vinculado al repositorio; conviene vincularlo.
 
 ## Abiertas
 
@@ -30,7 +30,7 @@ No hay hitos (milestones). Los estados del tablero no se pudieron leer: no apare
 | Issue | Responsable | Indicador | Nota |
 |---|---|---|---|
 | [#1](https://github.com/MainSteps/martini-conecta-android/issues/1) Proyecto base | MainSteps | IE 2.3.1 (15 %), base de ejecución | Cerrada por el PR #19. Paquetes `model`, `repository`, `viewmodel` y `ui/theme`. El saludo de plantilla sigue en `main`. |
-| [#2](https://github.com/MainSteps/martini-conecta-android/issues/2) GitHub Project | MatiasU-24 | IE 2.3.2 (20 %) | Cerrada. La URL del Project no se pudo confirmar por API. |
+| [#2](https://github.com/MainSteps/martini-conecta-android/issues/2) GitHub Project | MatiasU-24 | IE 2.3.2 (20 %) | Cerrada. Tablero: [Project de MainSteps](https://github.com/users/MainSteps/projects/2), a nivel de usuario y sin vincular al repositorio. |
 
 ## Pull requests
 

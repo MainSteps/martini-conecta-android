@@ -2,7 +2,7 @@
 
 Grupo 15. Propietario del repositorio: `MainSteps`. Colaborador: `MatiasU-24`. Rama por defecto: `main`. Visibilidad: pública.
 
-La planificación vive en GitHub Issues y, según el acuerdo del equipo, en un GitHub Project con los estados Backlog, Por hacer, En curso, En revisión, Bloqueado y Terminado. La issue #2, asignada a Matías, está cerrada y declara ese tablero listo. La API `projectsV2` del repositorio devolvió una lista vacía el 22 de octubre de 2026, así que la URL del Project no queda confirmada aquí. No inventes otra herramienta ni un tablero paralelo en Trello.
+La planificación vive en GitHub Issues y en el [GitHub Project de MainSteps](https://github.com/users/MainSteps/projects/2), con los estados Backlog, Por hacer, En curso, En revisión, Bloqueado y Terminado. La issue #2, asignada a Matías, está cerrada y dejó ese tablero listo. El Project es de usuario y no está vinculado al repositorio; conviene vincularlo para que se vea desde el repo. No abras otro tablero en Trello ni en paralelo.
 
 ## Reglas que no se negocian en un PR
 
@@ -12,6 +12,8 @@ La planificación vive en GitHub Issues y, según el acuerdo del equipo, en un G
 4. Sin commits directos a `main`. Así lo dicen el README y el informe. No se pudo leer la protección de rama: la API respondió 403.
 5. Mensajes de commit con tipo y alcance técnico, en español (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
 6. No se suben carpetas de build, secretos, `.idea/` ni datos personales.
+
+El pull request del pack de contexto (rama `docs/contexto-ia`) es intencionalmente sin issue y con commit de Cursor Agent: es una herramienta de apoyo, independiente del alcance del proyecto. Las issues del proyecto sí siguen una issue, una rama y un pull request desde la cuenta del responsable.
 
 ## Ramas
 

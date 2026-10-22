@@ -61,5 +61,5 @@ El informe del grupo proponía también `data/repository/`. El repositorio real 
 - Navegación centralizada en la clase sellada `Routes` del PR #20. Las pantallas no reciben el `NavController`.
 - Cámara y galería solo en el perfil, con Activity Result y FileProvider.
 - Tres tamaños de ventana, no una comprobación de anchos repartida por la UI.
-- GitHub público, issues, ramas y pull requests. La pauta pide Trello o una herramienta similar. El informe del grupo registra que el profesor indicó que Trello no es obligatorio, y el equipo eligió GitHub Projects. La API del repositorio no mostró un Project vinculado; el detalle está en [flujo-de-trabajo.md](flujo-de-trabajo.md).
+- GitHub público, issues, ramas y pull requests. La pauta pide Trello o una herramienta similar. El informe del grupo registra que el profesor indicó que Trello no es obligatorio, y el equipo eligió el [GitHub Project de MainSteps](https://github.com/users/MainSteps/projects/2). Ese Project es de usuario y no está vinculado al repositorio; conviene vincularlo. El detalle del flujo está en [flujo-de-trabajo.md](flujo-de-trabajo.md).
 - Código pensado para explicarse: un estado por flujo, operaciones de persistencia con nombres directos y la navegación en un solo archivo de rutas.
