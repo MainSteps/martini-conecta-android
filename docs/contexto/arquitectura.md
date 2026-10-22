@@ -12,8 +12,8 @@
 | minSdk 24, targetSdk 37, compileSdk 37 | En `main` | Dispositivos |
 | Navigation Compose 2.10.2 | Solo en el PR #20, sin fusionar | Rutas y `NavHost` |
 | ViewModel y StateFlow | Acordados, sin dependencia de ViewModel en `main` | Estado |
-| Room | Acordado en la issue #10, sin dependencia | Perfil y favoritos |
-| Activity Result APIs y FileProvider | APIs de plataforma; la integración es la issue #12 | Cámara y galería |
+| Room | Acordado en las issues #10 (perfil) y #27 (favoritos), sin dependencia | Perfil y favoritos |
+| Activity Result APIs y FileProvider | APIs de plataforma; la integración son las issues #12 (galería) y #28 (cámara) | Cámara y galería |
 
 Identificadores: namespace y `applicationId` `com.mainsteps.martiniconecta`. El nombre del proyecto Gradle y el `app_name` de recursos siguen siendo `MartiniConecta_Grupo15` (plantilla). El producto se llama Martini Conecta. No hay workflows en `.github/workflows/`; la compilación en pull requests es la issue #16.
 
@@ -46,7 +46,7 @@ Hasta que ese PR se fusione, esas clases no son parte de la rama principal.
 | ViewModel | `StateFlow`, validación y acciones. | `viewmodel/` |
 | Modelo | Perfil, contenido, categorías y estado de pantalla. | `model/` |
 | Repositorio | Catálogo local y operaciones de Room, separados de la UI. | `repository/` (ya creado en la raíz del paquete) |
-| Datos | Entidades, DAO y base para perfil y favoritos. | `data/local/`, a crear en la issue #10 |
+| Datos | Entidades, DAO y base para perfil y favoritos. | `data/local/`, a crear en las issues #10 y #27 |
 | Navegación | Rutas y un solo `NavHost`. | `navigation/` |
 | Nativos | Contratos de actividad, FileProvider y URI. | Flujo de perfil, más manifiesto y `res/xml` |
 
