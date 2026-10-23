@@ -5,7 +5,7 @@
 1. Seleccionar una issue asignada y comprobar sus dependencias.
 2. Crear una rama desde `main`.
 3. Implementar cambios pequeños y comprensibles.
-4. Compilar y ejecutar las pruebas aplicables.
+4. Compilar y recorrer el flujo en el emulador.
 5. Abrir un pull request vinculado con la issue.
 6. Solicitar revisión al integrante que no sea autor.
 7. Corregir observaciones y fusionar mediante **Squash and merge**.
@@ -35,23 +35,9 @@ No mezclar cambios sin relación ni usar mensajes como “avance”, “cambios�
 
 ## Pull requests
 
-Cada pull request debe:
+- Vincula la issue con `Closes #número` y explica qué cambia.
+- Compila en local y recorre el flujo en el emulador; la captura es opcional.
+- Revisa y aprueba el integrante que no es autor. El check de CI debe estar en verde.
+- Se fusiona con **Squash and merge**.
 
-- vincular la issue con `Closes #número`;
-- explicar qué cambia y por qué;
-- indicar cómo se verificó;
-- incluir capturas o video si modifica la interfaz;
-- evitar archivos generados, secretos y configuración local del IDE;
-- recibir revisión del integrante que no sea autor.
-
-## Definición de terminado
-
-Una tarea está terminada cuando:
-
-- cumple sus criterios de aceptación;
-- funciona en casos normales y errores razonables;
-- respeta MVVM y no concentra reglas en Composables;
-- no rompe funcionalidades existentes;
-- compila y supera las comprobaciones aplicables;
-- tiene evidencia en commits y pull request;
-- fue revisada y puede ser explicada por su responsable.
+Una tarea está terminada cuando cumple los criterios de su issue y su responsable puede explicarla.
