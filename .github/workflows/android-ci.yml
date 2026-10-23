@@ -1,0 +1,37 @@
+name: Android CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-37.0 build-tools;36.0.0
+
+      - name: Enlazar SDK Platform 37
+        run: |
+          PLAT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}/platforms"
+          if [ -d "$PLAT/android-37.0" ] && [ ! -e "$PLAT/android-37" ]; then
+            ln -s android-37.0 "$PLAT/android-37"
+          fi
+
+      - name: Compilar y probar
+        run: ./gradlew assembleDebug testDebugUnitTest --no-daemon
