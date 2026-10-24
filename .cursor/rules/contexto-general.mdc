@@ -9,15 +9,15 @@ MVP Android académico, grupo 15, DSY1105 Duoc UC. Caso: Master Martini Chile SP
 
 Stack acordado: Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, StateFlow, Room, Window Size Classes, Activity Result APIs y FileProvider. Sin Hilt, Koin, Retrofit, Firebase, DataStore ni backend.
 
-`main` hoy es la plantilla Compose más los paquetes vacíos `model/`, `repository/` y `viewmodel/`. El PR #20 (abierto) trae rutas y esqueletos; no está fusionado. No des por hecha una capa que no esté en el árbol que estás editando.
+`main` tiene navegación (`Routes`, `AppNavigation`), esqueletos de pantallas y CI; `model/`, `repository/` y `viewmodel/` siguen vacíos. No des por hecha una capa que no esté en el árbol que estás editando.
 
 ## Cómo trabajar
 
 - Lee `docs/contexto/README.md` y la issue asignada antes de escribir código. No reasignes issues.
 - Una issue, una rama, un PR. Revisión de la otra persona. Commits desde la cuenta del responsable.
-- Validación y reglas en el ViewModel. UI en español, datos ficticios, nada de material corporativo sin autorización.
+- Validación y reglas en el ViewModel. UI en español, datos personales ficticios; marca Martini solo en modo demo con aviso "Prototipo académico, no oficial". Accesibilidad base y "una acción por pantalla, receta en ≤ 3 toques" (ver docs/contexto/alcance-y-pantallas.md).
 - Versiones nuevas solo en `gradle/libs.versions.toml`, y solo si la issue lo pide.
-- No edites el repo después del congelamiento (noche del 30-10-2026). La subida es el 31-10-2026 a las 15:00, hora de Santiago.
+- No edites el repo después del congelamiento (viernes 30-10-2026 23:59). El sábado 31 solo AVA antes de las 15:00, hora de Santiago.
 
 ## Pack
 

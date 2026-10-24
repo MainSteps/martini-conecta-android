@@ -1,44 +1,66 @@
 # Alcance y pantallas
 
-Martini Conecta es el MVP Android del grupo 15 para el caso Master Martini. Centraliza contenido técnico ficticio, ordena el inicio según los intereses del perfil y guarda favoritos en el dispositivo, sin cuenta ni servidor.
+Martini Conecta es el MVP Android del grupo 15 para el caso Master Martini: lleva al usuario **del contenido al producto y del producto a una conversación con ventas**. Sin cuenta ni servidor.
+
+## Usuario y empresa
+
+- **Usuario:** clientes y emprendedores de panadería, pastelería, chocolatería, heladería y gastronomía. Parte importante tiene más de 50 años, bajo manejo digital o dificultades visuales.
+- **Empresa:** Master Martini Chile, filial de la italiana Unigrà. Vende insumos a negocios en 4 divisiones: Panadería & Pastelería, Gelatería, Food Service y Retail. Productos reales: Manteca Unigral, Margarina Gran Master Hoja, Bravo Crem, Monnalisa, Chocolate Caravella, Chocolate Ariba, línea vegana Orasì. Su contacto principal es WhatsApp "Habla con ventas" (`+56 9 4457 0770`). No publica recetas, videos ni academia en Chile: ese es el hueco que cubre la app.
+- **Éxito para la empresa:** más contacto con clientes, datos de perfil segmentados, difusión de marca y una experiencia simple y accesible.
+
+## Reglas de diseño (transversales)
+
+1. **Una acción principal por pantalla.**
+2. **Cualquier receta en ≤ 3 toques** desde Inicio.
+3. **Accesibilidad base en todo** (issue #3): texto en `sp` que respeta la letra del sistema, cuerpo ≥ 16 sp, contraste ≥ 4.5:1, áreas táctiles ≥ 48 dp, íconos siempre con texto, `contentDescription`, errores con ícono y texto simple. Nada se corta con la letra al máximo.
+4. Opciones para elegir (botones, chips) antes que texto libre.
+
+## Niveles y fechas de corte
+
+| Nivel | Qué | Corte |
+|---|---|---|
+| 1: pauta | Todo lo que asegura el 100 % de la rúbrica, ya construido para Martini y su usuario. | Martes 27/10 |
+| 2: diferenciador | Inicio por división, productos usados, "Consultar a ventas", escalar receta, compartir. | Jueves 29/10 23:59 |
+| 3: extra | Preferencia "Letra grande" y pulido visual. | Viernes 30/10 |
+
+- Viernes 30/10: Nivel 3, README y verificación (preparados en paralelo con IA) y prueba final en emulador (letra al máximo + TalkBack).
+- **Viernes 30/10 23:59: congelamiento del código.** Lo que no esté terminado se saca, no queda a medias.
+- Sábado 31/10: solo trámites del AVA, antes de las 15:00. Sin pushes.
 
 ## Funcionalidades
 
-| Función | Comportamiento | Qué demuestra |
-|---|---|---|
-| Configuración inicial | Nombre, correo, tipo y tamaño de negocio e intereses. Valida cada campo. | Formulario, StateFlow, Room |
-| Inicio | Saludo, categorías y destacados según los intereses guardados. | Material 3 y estado |
-| Exploración | Lista ficticia, búsqueda y filtros por categoría o formato. | Estado y listas |
-| Detalle | Título, descripción, categoría, formato, duración o dificultad, favorito y compartir. | Navegación, animación y recurso nativo (Intent) |
-| Favoritos | Alta y baja persistidas. Estado vacío que explica cómo guardar. | Room y repositorio |
-| Perfil | Editar datos e intereses. Foto desde cámara o galería. | Validación, permisos, recursos nativos |
-| Sugerir contenido | Tema, categoría, formato y comentario. Valida cada campo con error e ícono. Se guarda en local. | Segundo formulario, validación desacoplada |
-| Animaciones | Feedback al marcar favorito, al validar, en mensajes de éxito o al cambiar el contenido. | Retroalimentación visual |
-
-En el PR #20 esas pantallas son esqueletos con texto de relleno. La barra inferior cubre Inicio, Explorar, Favoritos y Perfil. Onboarding y Detalle van sin barra. El recorrido previsto es: primer ingreso al onboarding, validación, guardado local, inicio personalizado, exploración, detalle, favorito, favoritos que sobreviven al reinicio, y perfil con imagen.
+| Función | Nivel | Issue | Comportamiento |
+|---|---|---|---|
+| Tema y accesibilidad | 1 | #3 | Material 3 con colores Martini (modo demo) y reglas de accesibilidad. |
+| Catálogo | 1 | #5 | 9–12 recetas realistas por división, con productos Martini, rinde e ingredientes. |
+| Onboarding y perfil | 1 | #6, #7, #10 | Nombre, correo, teléfono opcional, división, tamaño (3 botones), intereses (chips). |
+| Explorar y detalle | 1 | #9 | Un filtro en chips, búsqueda simple, detalle con ingredientes y pasos. |
+| Favoritos | 1 | #27 | Guardan el contenido completo; se ven sin red. |
+| "Quiero que me contacten" | 1 | #24 | Segundo formulario validado: nombre, WhatsApp, división, comuna, producto de interés. |
+| Foto de perfil | 1 | #12, #28 | Galería (principal) y cámara (botón secundario). |
+| Animaciones | 1 | #14 | Feedback corto: favorito, validación, transición. |
+| Inicio por división | 2 | #8 | "Para tu panadería", etc. |
+| Productos usados, consultar a ventas, escalar receta | 2 | #9, #25 | En el detalle. |
+| Compartir receta | 2 | #25 | `ACTION_SEND`. |
+| Letra grande | 3 | #10 | Preferencia guardada en el perfil. |
 
 ## Reglas de negocio
 
-- Un perfil local. Sin login, sin varias cuentas y sin recuperar contraseña.
-- Nombre obligatorio, con un largo mínimo razonable. Correo obligatorio y con formato válido.
-- Hay que elegir tipo de negocio, tamaño aproximado y al menos un interés.
-- Un contenido no queda dos veces en favoritos. La acción alterna guardar y quitar.
-- La foto sale de la cámara o de la galería y se muestra en la interfaz.
-- Teléfono: el informe lo deja como campo opcional solo si el formulario sigue claro. Las issues #6 y #7 no lo incluyen. No lo agregues por iniciativa propia.
-- RUT de empresa y dirección quedan fuera.
+- Un perfil local, sin login.
+- Nombre y correo obligatorios. Teléfono **opcional**, formato chileno `+56 9 XXXX XXXX`, datos ficticios en pruebas.
+- División, tamaño ("Solo yo", "2 a 10 personas", "Más de 10") y al menos un interés. El tamaño sirve a la empresa, no personaliza la UI.
+- Favoritos sin duplicados; la acción alterna.
+- El número de ventas vive en una sola constante.
+- RUT y dirección quedan fuera.
 
-## Contenido de demostración
+## Marca
 
-Entre 9 y 12 piezas ficticias, con id, título, descripción breve, categoría, formato, dificultad, duración estimada, imagen local y etiquetas. Sin texto de relleno del tipo “lorem”. Ninguna se presenta como receta o curso oficial de Master Martini. El modelo queda listo para, en otro proyecto, cambiar la fuente local por una API. Esa API no forma parte de este MVP.
+Se usan nombres de productos, colores (azul `#1B80C5`, a confirmar con el logo) y el WhatsApp público de Martini en **modo demo**, con el aviso visible "Prototipo académico, no oficial".
 
-## Recursos nativos
+## Recursos nativos (IE 2.4.1)
 
-Cámara y galería, las dos dentro del perfil: contratos de Activity Result, URI segura con FileProvider para la captura, permiso denegado explicado en pantalla, y cancelar sin cerrar la app. No se pide GPS ni otros sensores.
+El material del ramo considera cámara y galería como los recursos nativos: los dos son Nivel 1 (#12, #28), con Activity Result, FileProvider, permiso explicado y cancelación segura. Compartir/WhatsApp con Intent (#25) es extra.
 
 ## Fuera del MVP
 
-Inicio de sesión real, backend, sincronización, panel de administración, pagos, notificaciones push, analítica, transmisión real de video, recomendaciones automáticas e inteligencia artificial dentro de la app. Tampoco logos, videos o manuales de marca mientras no haya autorización explícita.
-
-## Experiencia
-
-Jerarquía clara, acciones visibles, pocos pasos y vuelta atrás predecible. Texto legible con el escalado del sistema, contraste suficiente, áreas táctiles cómodas y errores escritos junto al campo. Tiene que poder completar el perfil y encontrar un contenido alguien con poca experiencia digital, sin un instructivo al lado.
+Login, backend, sincronización, pagos, push, analítica, chat, puntos de fidelidad, video real, IA dentro de la app, DataStore.

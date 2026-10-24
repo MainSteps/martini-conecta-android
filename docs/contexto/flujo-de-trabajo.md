@@ -28,7 +28,7 @@ El pull request enlaza `Closes #<n>`, dice qué cambia y confirma compilación l
 
 ## Dueños
 
-Asignación vigente desde la reorganización del 22 de octubre de 2026. Las issues cerradas no se listan.
+Asignación vigente desde la reestructuración del 24 de octubre de 2026 (alcance Martini, niveles 1/2/3). Las issues cerradas no se listan.
 
 Cada integrante toca las cuatro capas: interfaz en Compose, lógica y estado con ViewModel, persistencia y un recurso nativo.
 
@@ -37,24 +37,23 @@ Cada integrante toca las cuatro capas: interfaz en Compose, lógica y estado con
 | Orden | Issue | Tema | Capa | IE |
 |---|---|---|---|---|
 | 1 | #7 | Validación y estado del perfil | ViewModel | 2.2.1 |
-| 2 | #6 | Onboarding y formulario de perfil | UI | 2.1.2 |
+| 2 | #6 | Onboarding y perfil | UI | 2.1.2 |
 | 3 | #10 | Room: base de datos y perfil | Datos | 2.3.1 |
-| 4 | #12 | Galería para foto de perfil | Nativo | 2.4.1 |
-| 5 | #8 | Inicio personalizado | UI y estado | 2.1.1 |
-| 6 | #25 | Compartir con Intent | Nativo | 2.4.1 |
-| 7 | #14 | Animaciones | UI | 2.2.2 |
-| — | #16, PR #22 | CI en pull requests | Herramientas | 2.3.2 |
+| 4 | #12 | Galería | Nativo | 2.4.1 |
+| 5 | #14 | Animaciones de feedback | UI | 2.2.2 |
+| N2 | #8 | Inicio por división | UI y estado | 2.1.1 |
+| N2 | #25 | Compartir y consultar a ventas | Nativo | 2.4.1 |
 
 ### Matías Urrejola (`MatiasU-24`)
 
 | Orden | Issue | Tema | Capa | IE |
 |---|---|---|---|---|
-| 1 | #3 | Tema Material 3 y componentes | UI | 2.1.1 |
-| 2 | #5 | Modelo y catálogo local | Datos | 2.3.1 |
-| 3 | #9 | Exploración, búsqueda y detalle | UI y ViewModel | 2.1.1 |
-| 4 | #27 | Room: favoritos y pantalla Favoritos | Datos y ViewModel | 2.3.1 |
-| 5 | #24 | Sugerir contenido | UI, ViewModel y datos | 2.1.2 y 2.2.1 |
-| 6 | #28 | Cámara para foto de perfil | Nativo | 2.4.1 |
+| 1 | #3 | Tema M3 Martini + accesibilidad | UI | 2.1.1 |
+| 2 | #5 | Catálogo Martini | Datos | 2.3.1 |
+| 3 | #9 | Explorar y detalle (N1; N2 en detalle) | UI y ViewModel | 2.1.1 |
+| 4 | #27 | Favoritos en Room | Datos y ViewModel | 2.3.1 |
+| 5 | #24 | «Quiero que me contacten» | UI, ViewModel y datos | 2.1.2 y 2.2.1 |
+| 6 | #28 | Cámara (botón secundario) | Nativo | 2.4.1 |
 
 ### Los dos
 
@@ -67,10 +66,14 @@ Cada integrante toca las cuatro capas: interfaz en Compose, lógica y estado con
 
 ## Orden de dependencia
 
-Ninguno empieza esperando al otro: Diego arranca por #7 y #6, Matías por #3, #5 y #9. Diego crea la `AppDatabase` en #10; Matías agrega favoritos en #27 (si llega antes, crea la base y Diego suma perfil). La cámara (#28) reutiliza el evento de foto de la galería (#12). Compartir (#25) va sobre el detalle de #9. La animación de favorito (#14) llega después de #27. Cierran #17 y #23.
+Ninguno empieza esperando al otro: Diego arranca por #7 y #6, Matías por #3, #5 y #9. Diego crea la `AppDatabase` en #10; Matías agrega favoritos en #27 (si llega antes, crea la base y Diego suma perfil). La cámara (#28) reutiliza el evento de foto de la galería (#12). Compartir y consultar a ventas (#25) van sobre el detalle de #9. Primero se cierra todo el Nivel 1 de cada uno; el Nivel 2 empieza después. La animación de favorito (#14) llega después de #27. Cierran #17 y #23.
 
 Si una tarea se atrasa, se dice en la issue. No se absorbe en silencio el bloque de la otra persona.
 
-## Congelamiento
+## Niveles y congelamiento
 
-La noche del 30 de octubre de 2026 se deja de integrar funcionalidad. El 31 de octubre de 2026 a las 15:00 (hora de Santiago) se sube el encargo. Desde ese momento y hasta la evaluación del 3 de noviembre de 2026 nadie pushea al repositorio. La #17 registra el SHA entregado y la #23 cubre el AVA grupal y el individual de cada uno.
+- **Nivel 1 (pauta):** cerrado el martes 27 de octubre de 2026.
+- **Nivel 2 (diferenciador):** hasta el jueves 29 de octubre de 2026 a las 23:59.
+- **Viernes 30:** Nivel 3 (letra grande, pulido), README y verificación (preparados en paralelo con IA) y prueba final en emulador con letra al máximo y TalkBack.
+- **Viernes 30 de octubre de 2026, 23:59: congelamiento del código.** Lo que no esté terminado se saca, no queda a medias. La #17 registra el SHA.
+- **Sábado 31:** solo trámites del AVA (#23) antes de las 15:00 (hora de Santiago). Desde el congelamiento y hasta la evaluación del 3 de noviembre de 2026 nadie pushea al repositorio.

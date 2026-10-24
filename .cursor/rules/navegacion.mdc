@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Navegación
 
-La referencia viva es el PR #20 (`feat/4-navegacion-esqueletos`), todavía sin fusionar. Si trabajas sobre `main` antes de ese merge, no copies un segundo grafo: espera esa base o parte de esa rama según indique la issue.
+La navegación del PR #20 ya está en `main`. No copies un segundo grafo.
 
 ## Rutas
 
