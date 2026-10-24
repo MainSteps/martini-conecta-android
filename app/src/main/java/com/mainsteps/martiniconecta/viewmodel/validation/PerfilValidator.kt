@@ -9,7 +9,7 @@ import com.mainsteps.martiniconecta.model.TamanoNegocio
 object PerfilValidator {
 
     fun errorNombre(valor: String): String? {
-        if (valor.trim().length < 2) {
+        if (valor.trim().count { it.isLetter() } < 2) {
             return "Escribe al menos 2 letras"
         }
         return null
