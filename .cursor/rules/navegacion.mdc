@@ -1,34 +1,19 @@
 ---
-description: Navigation Compose con la clase sellada Routes, NavHost y barra inferior de Martini Conecta.
+description: Navigation Compose con la clase sellada Routes, un solo NavHost y barra inferior.
 globs: "**/navigation/**/*.kt,**/MainActivity.kt"
 alwaysApply: false
 ---
 
 # Navegación
 
-La referencia viva es el PR #20 (`feat/4-navegacion-esqueletos`), todavía sin fusionar. Si trabajas sobre `main` antes de ese merge, no copies un segundo grafo: espera esa base o parte de esa rama según indique la issue.
+Ya está en `main`: `navigation/Routes.kt`, `navigation/AppNavigation.kt` y `navigation/AppBottomBar.kt`. No crees un segundo grafo.
 
 ## Rutas
-
-Hay una sola clase sellada, `com.mainsteps.martiniconecta.navigation.Routes`, con `route: String`:
-
-- `Onboarding` → `onboarding`
-- `Inicio` → `inicio`
-- `Explorar` → `explorar`
-- `Favoritos` → `favoritos`
-- `Perfil` → `perfil`
-- `Detalle` → `detalle/{itemId}`, con `createRoute(itemId)`
-
-Extiende esa clase si aparece una ruta nueva. No declares strings de ruta sueltos en pantallas ni migres a otro esquema de navegación en este encargo.
+Clase sellada `Routes` con `route: String`: `Onboarding`, `Inicio`, `Explorar`, `Favoritos`, `Perfil`, `Detalle` (`detalle/{itemId}` con `createRoute(itemId)`). Una ruta nueva (p. ej. contacto) se agrega a esa clase; nada de strings sueltos.
 
 ## Grafo
-
-`AppNavigation` es el único `NavHost`. Destino inicial: Onboarding si no hay perfil, Inicio si lo hay. En el PR #20 `MainActivity` pasa `hasProfile = false` fijo; cuando el perfil esté persistido, ese valor sale del estado, no de un literal.
-
-- Continuar en el onboarding abre Inicio y saca el onboarding del historial (`popUpTo` inclusivo).
-- La barra inferior muestra Inicio, Explorar, Favoritos y Perfil. Al cambiar de pestaña: `popUpTo(Inicio)` con `saveState`, `launchSingleTop` y `restoreState`.
-- Onboarding y Detalle no muestran la barra.
-- Explorar abre Detalle con el `itemId`. Atrás vuelve a Explorar.
-- Los íconos de letra (`I`, `E`, `F`, `P`) son del esqueleto. No los presentes como UI final.
-
-Las pantallas reciben callbacks (`onContinue`, `onOpenDetail`, `onBack`). No les pases el `NavController`.
+- `AppNavigation` es el único `NavHost`. Inicio si hay perfil guardado, Onboarding si no; ese valor sale del estado, no de un literal.
+- Al terminar el onboarding: ir a Inicio con `popUpTo` inclusivo.
+- Barra inferior: Inicio, Explorar, Favoritos, Perfil, con **Material Icons + texto**. Al cambiar de pestaña: `popUpTo(Inicio) { saveState = true }`, `launchSingleTop`, `restoreState`.
+- Onboarding, Detalle y el formulario de contacto van sin barra.
+- Las pantallas reciben callbacks (`onOpenDetail`, `onBack`), nunca el `NavController`.

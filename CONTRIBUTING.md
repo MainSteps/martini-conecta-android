@@ -2,7 +2,7 @@
 
 ## Flujo de una tarea
 
-1. Seleccionar una issue asignada y comprobar sus dependencias.
+1. Seleccionar una issue asignada en el [Project](https://github.com/users/MainSteps/projects/2), comprobar sus dependencias y moverla a **En curso**.
 2. Crear una rama desde `main`.
 3. Implementar cambios pequeños y comprensibles.
 4. Compilar y recorrer el flujo en el emulador.
@@ -35,7 +35,7 @@ No mezclar cambios sin relación ni usar mensajes como “avance”, “cambios�
 
 ## Pull requests
 
-- Vincula la issue con `Closes #número` y explica qué cambia.
+- Vincula la issue con `Closes #número` (opcional si es solo docs) y explica qué cambia.
 - Compila en local y recorre el flujo en el emulador; la captura es opcional.
 - Revisa y aprueba el integrante que no es autor. El check de CI debe estar en verde.
 - Se fusiona con **Squash and merge**.

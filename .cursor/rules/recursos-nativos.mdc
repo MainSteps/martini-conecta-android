@@ -1,26 +1,26 @@
 ---
-description: Cámara y galería del perfil con Activity Result APIs y FileProvider.
-globs: "**/AndroidManifest.xml,**/res/xml/**/*.xml,**/ui/screens/Perfil*.kt,**/ui/screens/Onboarding*.kt"
+description: Galería, cámara e Intents (compartir y WhatsApp) con Activity Result APIs y FileProvider.
+globs: "**/AndroidManifest.xml,**/res/xml/**/*.xml,**/ui/screens/Perfil*.kt,**/ui/screens/Onboarding*.kt,**/ui/screens/Detail*.kt"
 alwaysApply: false
 ---
 
-# Cámara y galería
+# Recursos nativos (IE 2.4.1)
 
-Los dos recursos nativos del encargo son cámara y galería, en el perfil (issue #12, Matías). No sumes GPS, contactos ni micrófono.
+El material del ramo considera galería y cámara los recursos nativos: ambos son Nivel 1. Intents de compartir/WhatsApp son extra (Nivel 2). No sumes GPS, contactos ni micrófono.
 
-## Contratos
+## Galería (#12) — opción principal
+- `rememberLauncherForActivityResult(PickVisualMedia())` con `ImageOnly`. Sin permiso de almacenamiento.
 
-Usa Activity Result APIs (`rememberLauncherForActivityResult`), no `startActivityForResult`.
+## Cámara (#28) — botón secundario
+- `TakePicture` sobre un URI de `FileProvider` en `cacheDir`/`filesDir`. Nunca `file://`.
+- `<provider>` y `res/xml/file_paths.xml` en esta issue. Autoridad en un helper, no en el Composable.
+- Permiso `CAMERA` declarado y pedido en tiempo de ejecución; si se niega, texto simple que explica y deja seguir sin foto.
 
-- Galería: un contrato que devuelva un URI (`PickVisualMedia` o `GetContent`). `activity-compose` 1.8.0 ya está en el catálogo.
-- Cámara: `TakePicture` sobre un URI de contenido creado con `FileProvider`. El archivo temporal vive en el espacio de la app. No publiques un `file://` ni una ruta absoluta.
+## Comportamiento común
+- Aceptar: la foto se ve y se guarda vía ViewModel → repositorio (URI en el perfil). Galería y cámara usan el **mismo** evento del ViewModel.
+- Cancelar: no pasa nada, no hay crash.
 
-Declara el `provider` y el XML de rutas solo cuando implementes esta issue. Permisos mínimos: `CAMERA` para capturar. No pidas acceso amplio al almacenamiento si el contrato de galería entrega el URI. En minSdk 24 el permiso tiene que declararse y pedirse en tiempo de ejecución.
-
-## Comportamiento
-
-- Aceptar: la imagen se ve en el perfil y se conserva de forma coherente con el resto del perfil (el URI o la copia local pasan por el repositorio, no quedan solo en un `remember` que se pierde al rotar).
-- Cancelar: la pantalla sigue abierta, sin excepción.
-- Permiso denegado: un mensaje dice qué pasó y cómo seguir sin foto. No cierres la actividad.
-
-La UI muestra la foto con un tamaño estable (recorte o borde coherente con Material 3). El Composable no resuelve la autoridad del `FileProvider` a mano: eso queda en un helper chico y localizable del flujo de perfil.
+## Intents (#25)
+- Compartir: `Intent.ACTION_SEND` + `Intent.createChooser`.
+- Consultar a ventas: `ACTION_VIEW` con `https://wa.me/<numero>?text=<mensaje codificado>`. El número vive en **una sola constante**.
+- Sin app que lo resuelva: mensaje simple, sin crash.

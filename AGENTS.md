@@ -1,22 +1,15 @@
 # Martini Conecta — guía para agentes
 
-Prototipo académico Android del grupo 15 (DSY1105 Desarrollo de Aplicaciones Móviles, Duoc UC, sección 003V) para el caso Master Martini Chile SPA. La app organiza contenidos técnicos ficticios —recetas, videos y cursos— para emprendedores y profesionales gastronómicos, con perfil local, favoritos e interfaz simple para distintos niveles de manejo digital.
+App Android académica (DSY1105, grupo 15) para **Master Martini Chile**: lleva del contenido (recetas por división) al producto Martini y del producto a una conversación con ventas por WhatsApp. Usuario objetivo: dueños de negocios gastronómicos, muchos mayores de 50, con bajo manejo digital o dificultades visuales.
 
-El profesor permite usar IA en el desarrollo y el equipo está de acuerdo. El código debe quedar explicable por Diego y por Matías sin el asistente: nombres claros, una responsabilidad por capa y flujos localizables.
+## Lee antes de trabajar
+1. **[`docs/contexto/contexto.md`](docs/contexto/contexto.md)**: el único documento de contexto (caso, usuario, alcance por niveles, diseño y accesibilidad, arquitectura, pauta, calendario y flujo).
+2. La issue asignada completa: cada una trae contexto, qué construir, archivos, criterios, fuera de alcance, dependencias y cómo probar.
+3. Las reglas de `.cursor/rules/` (flujo de sesión, contexto, Kotlin/Compose, accesibilidad, navegación, Room, recursos nativos).
 
-## Stack y arquitectura
-
-Kotlin, Jetpack Compose y Material 3, con MVVM. En `main` el módulo `app` (`com.mainsteps.martiniconecta`, minSdk 24, targetSdk 37) tiene el tema de plantilla y los paquetes vacíos `model/`, `repository/` y `viewmodel/`. Room, ViewModel, StateFlow, cámara, galería y compartir con Intent están acordados en issues, pero no hay dependencias ni código de eso en `main`.
-
-El PR [#20](https://github.com/MainSteps/martini-conecta-android/pull/20) (abierto, sin fusionar) agrega Navigation Compose, la clase sellada `Routes` y esqueletos de Onboarding, Inicio, Explorar, Detalle, Favoritos y Perfil. No lo trates como código de `main` ni abras un segundo grafo de rutas.
-
-## Reglas de trabajo
-
-- Una issue, una rama (`feat/<n>-…`, `fix/`, `docs/`, `chore/`) y un pull request con CI en verde. Revisa la otra persona y se fusiona con squash. Cada integrante commitea desde su cuenta (`MainSteps`, `MatiasU-24`).
-- No amplíes el stack: sin login, backend, nube, analítica ni material corporativo no autorizado. Solo datos ficticios.
-- La validación y las reglas de negocio viven en el ViewModel. El Composable pinta estado y emite eventos.
-- Subida del encargo el 31 de octubre de 2026 a las 15:00 (hora de Santiago). Después de esa entrega no se modifica el repositorio: un cambio, aunque sea mínimo, puede calificarse con 1,0.
-
-## Contexto
-
-Antes de implementar, lee el índice en [`docs/contexto/README.md`](docs/contexto/README.md). Ahí están el caso, el alcance, la arquitectura, la pauta del Encargo, el flujo de trabajo y el mapa de issues.
+## Reglas clave
+- Flujo de sesión: visión general → plan en to-dos → un to-do a la vez esperando "sigue" → preguntar antes de salir del alcance → `./gradlew assembleDebug` → un commit, push y PR con `Closes #<n>` y revisión de la otra persona → 3 preguntas de defensa.
+- MVVM: la UI pinta estado; validación y reglas en el ViewModel; datos por repositorio; Room en `data/local/`.
+- Accesibilidad en todo: `sp`, cuerpo ≥ 16 sp, contraste ≥ 4.5:1, 48 dp, íconos con texto, `contentDescription`.
+- Sin comentarios en el código, sin trailer `Co-authored-by`, sin commits directos a `main`, sin force push.
+- Congelamiento: viernes 30/10/2026 23:59 (Santiago). Después nadie pushea.

@@ -1,0 +1,33 @@
+---
+description: Cómo trabaja el agente con la persona en cada sesión (plan, pasos, commits, PR y defensa).
+alwaysApply: true
+---
+
+# Flujo de sesión con IA
+
+Sirve para cualquiera de los dos integrantes. El autor del commit es quien está usando el agente, con su propia cuenta de GitHub.
+
+## Al empezar
+1. Lee `AGENTS.md`, `docs/contexto/contexto.md` y la issue.
+2. Da una **visión general** corta: qué pide la issue, qué archivos se tocan, cómo encaja en la app y qué IE cubre.
+3. Propón un **plan en to-dos** numerados y pequeños.
+
+## Durante
+- Ejecuta **un to-do a la vez**. Al terminarlo, explica en 2-3 líneas qué hiciste y **espera "sigue"** antes del siguiente.
+- Si hace falta tocar algo **fuera del alcance de la issue** (otra pantalla, otra capa, una dependencia no prevista, un archivo de la otra persona), **detente y pregunta**.
+- **Sin comentarios en el código.** Nombres claros en su lugar.
+- Código que la persona pueda explicar sin el agente: simple antes que ingenioso.
+
+## Al cerrar
+1. `./gradlew assembleDebug` debe pasar. Si falla, se corrige antes de seguir.
+2. Pide a la persona el recorrido en emulador descrito en "Cómo probar" de la issue.
+3. Rama `feat/<n>-<descripcion>` (o `fix/`, `docs/`, `chore/`) desde `main` actualizada.
+4. **Un commit** en español con tipo (`feat: …`), sin trailer `Co-authored-by`.
+5. Push y PR con la plantilla, `Closes #<n>`, revisor = la otra persona (`MainSteps` ↔ `MatiasU-24`). No fusiones: lo hace el revisor con Squash and merge.
+6. Termina con **3 preguntas de defensa** sobre lo implementado (qué hace, por qué así, qué pasaría si…), para que la persona practique explicar su código.
+
+## Nunca
+- Commits directos a `main`, force push, reescribir historial ni fusionar PRs.
+- Commitear como la otra persona.
+- Subir `build/`, `.gradle/`, `.idea/`, `local.properties`, secretos o datos reales.
+- Pushear después del congelamiento.

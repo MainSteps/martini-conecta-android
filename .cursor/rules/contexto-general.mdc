@@ -1,31 +1,21 @@
 ---
-description: Contexto obligatorio de Martini Conecta (caso, alcance, MVVM y entrega). Léelo antes de editar el repo.
+description: Contexto obligatorio de Martini Conecta. Léelo antes de cualquier cambio.
 alwaysApply: true
 ---
 
 # Martini Conecta
 
-MVP Android académico, grupo 15, DSY1105 Duoc UC. Caso: Master Martini Chile SPA (contenidos técnicos para clientes gastronómicos). Equipo: Diego Alonso Pazos Atarama (`MainSteps`) y Matías Urrejola (`MatiasU-24`).
+MVP Android académico (DSY1105, grupo 15) para Master Martini Chile, filial de Unigrà. La app lleva del contenido (recetas por división) al producto Martini y del producto a una conversación con ventas por WhatsApp.
 
-Stack acordado: Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, StateFlow, Room, Window Size Classes, Activity Result APIs y FileProvider. Sin Hilt, Koin, Retrofit, Firebase, DataStore ni backend.
+Usuario objetivo: dueños de negocios gastronómicos, muchos mayores de 50, con bajo manejo digital o dificultades visuales. Toda decisión se justifica por lo que le aporta a ese usuario o a la empresa.
 
-`main` hoy es la plantilla Compose más los paquetes vacíos `model/`, `repository/` y `viewmodel/`. El PR #20 (abierto) trae rutas y esqueletos; no está fusionado. No des por hecha una capa que no esté en el árbol que estás editando.
+Antes de escribir código lee, en este orden:
+1. `AGENTS.md`
+2. `docs/contexto/contexto.md` (caso, alcance por niveles, arquitectura, pauta, calendario, flujo)
+3. La issue asignada completa (`gh issue view <n>`)
 
-## Cómo trabajar
-
-- Lee `docs/contexto/README.md` y la issue asignada antes de escribir código. No reasignes issues.
-- Una issue, una rama, un PR. Revisión de la otra persona. Commits desde la cuenta del responsable.
-- Validación y reglas en el ViewModel. UI en español, datos ficticios, nada de material corporativo sin autorización.
-- Versiones nuevas solo en `gradle/libs.versions.toml`, y solo si la issue lo pide.
-- No edites el repo después del congelamiento (noche del 30-10-2026). La subida es el 31-10-2026 a las 15:00, hora de Santiago.
-
-## Pack
-
-- Caso: `docs/contexto/caso.md`
-- Alcance y pantallas: `docs/contexto/alcance-y-pantallas.md`
-- Arquitectura real y acordada: `docs/contexto/arquitectura.md`
-- Pauta del Encargo: `docs/contexto/pauta-encargo.md`
-- Flujo Git: `docs/contexto/flujo-de-trabajo.md`
-- Issues abiertas: `docs/contexto/issues.md`
-
-Reglas por archivo: Kotlin/Compose, navegación, Room, recursos nativos, adaptabilidad y flujo Git en `.cursor/rules/`.
+Hechos que no se negocian:
+- Stack: Kotlin, Compose, Material 3, Navigation Compose, ViewModel + StateFlow, Room, Activity Result APIs, FileProvider. Sin Hilt, Koin, Retrofit, Firebase, DataStore ni backend.
+- Niveles por label: `nivel 1: pauta` (cierre mar 27/10), `nivel 2: diferenciador` (jue 29/10 23:59), `nivel 3: extra` (vie 30/10). No empieces Nivel 2 si tu Nivel 1 está abierto.
+- Congelamiento: viernes 30/10/2026 23:59 (Santiago). Después nadie pushea; un cambio posterior puede costar un 1,0.
+- Marca Martini solo en modo demo con aviso "Prototipo académico, no oficial". Datos personales siempre ficticios.
