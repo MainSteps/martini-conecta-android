@@ -1,20 +1,28 @@
 package com.mainsteps.martiniconecta.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 
 private data class BottomDestination(
     val route: String,
     val label: String,
-    val symbol: String
+    val icon: ImageVector
 )
 
 private val bottomDestinations = listOf(
-    BottomDestination(Routes.Inicio.route, "Inicio", "I"),
-    BottomDestination(Routes.Explorar.route, "Explorar", "E"),
-    BottomDestination(Routes.Favoritos.route, "Favoritos", "F"),
-    BottomDestination(Routes.Perfil.route, "Perfil", "P")
+    BottomDestination(Routes.Inicio.route, "Inicio", Icons.Default.Home),
+    BottomDestination(Routes.Explorar.route, "Explorar", Icons.Default.Search),
+    BottomDestination(Routes.Favoritos.route, "Favoritos", Icons.Default.Favorite),
+    BottomDestination(Routes.Perfil.route, "Perfil", Icons.Default.Person)
 )
 
 @Composable
@@ -30,7 +38,10 @@ fun AppBottomBar(
                     onNavigate(destination.route)
                 },
                 icon = {
-                    Text(text = destination.symbol)
+                    Icon(
+                        imageVector = destination.icon,
+                        contentDescription = destination.label
+                    )
                 },
                 label = {
                     Text(text = destination.label)
