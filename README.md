@@ -26,11 +26,16 @@ Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, StateFlow, R
 - Diego Alonso Pazos Atarama — [@MainSteps](https://github.com/MainSteps)
 - Matías Urrejola — [@MatiasU-24](https://github.com/MatiasU-24)
 
-## Forma de trabajo
+## Gestión del proyecto (GitHub Projects en lugar de Trello)
 
-La planificación se gestiona con GitHub Issues y GitHub Projects. Cada tarea se desarrolla en una rama propia y se integra mediante pull request con revisión cruzada. No se realizan cambios directos en `main`.
+La planificación vive en el [GitHub Project del equipo](https://github.com/users/MainSteps/projects/2), que reemplaza a Trello (la pauta acepta "Trello o similar").
 
-Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para las reglas de ramas, commits, y revisión.
+- Columnas: **Por hacer → En curso → Hecho**.
+- Cada tarjeta es una issue con responsable y label de nivel (`nivel 1: pauta`, `nivel 2: diferenciador`, `nivel 3: extra`).
+- Flujo: **issue → rama `feat/<n>-…` → PR con `Closes #<n>` y revisión cruzada → Squash and merge → Hecho**.
+- Cada integrante commitea desde su propia cuenta; no hay commits directos a `main`.
+
+Detalle en [CONTRIBUTING.md](CONTRIBUTING.md) y contexto completo en [docs/contexto/contexto.md](docs/contexto/contexto.md).
 
 ## Contexto
 

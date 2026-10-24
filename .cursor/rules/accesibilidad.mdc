@@ -1,0 +1,30 @@
+---
+description: Reglas de accesibilidad y diseño para usuarios mayores de 50, con baja visión o poco manejo digital.
+globs: "**/ui/**/*.kt,**/navigation/**/*.kt"
+alwaysApply: false
+---
+
+# Accesibilidad y diseño
+
+El usuario del caso tiene muchas veces más de 50 años, poco manejo digital o dificultades visuales. Cada pantalla debe poder usarse sin instructivo.
+
+## Diseño
+- **Una acción principal por pantalla**, destacada (botón lleno); el resto secundaria.
+- **Cualquier receta en ≤ 3 toques** desde Inicio.
+- Elegir antes que escribir: botones grandes y chips en vez de texto libre.
+- Lenguaje simple, de tú, sin tecnicismos.
+
+## Reglas técnicas
+- Tipografía solo en `sp` desde `MaterialTheme.typography`; cuerpo ≥ 16 sp. Nada de `fontSize` suelto.
+- Sin `height` fija en contenedores con texto; usa `heightIn(min = …)` y deja crecer.
+- Áreas táctiles ≥ 48 dp (`minimumInteractiveComponentSize`, `heightIn(min = 48.dp)`), separadas al menos 8 dp.
+- Colores solo desde `MaterialTheme.colorScheme`; contraste ≥ 4.5:1. `dynamicColor` desactivado.
+- El color nunca es el único indicador: errores con ícono + texto.
+- Íconos con acción: `contentDescription` en español. Íconos decorativos: `contentDescription = null`.
+- Barra inferior y botones con ícono **y** texto.
+- Campos con `label` visible y `supportingText` para el error.
+- `Modifier.semantics { heading() }` en títulos de pantalla.
+
+## Cómo comprobar
+1. Ajustes del emulador → tamaño de fuente al máximo: nada se corta ni se superpone.
+2. Activa TalkBack: cada imagen, ícono y botón se anuncia con sentido.

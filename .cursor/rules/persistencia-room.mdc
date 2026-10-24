@@ -1,26 +1,25 @@
 ---
-description: Room para perfil y favoritos, repositorios y modelos locales de Martini Conecta.
+description: Room para perfil, favoritos y solicitudes de contacto; repositorios y modelos.
 globs: "**/repository/**/*.kt,**/model/**/*.kt,**/data/**/*.kt,**/*Dao.kt,**/*Entity.kt,**/*Database.kt"
 alwaysApply: false
 ---
 
-# Persistencia local
-
-Room entra con la issue #10 (Matías). En `main` no está la dependencia, ni el plugin de anotaciones, ni entidades. No la adelantes en pantallas ni en el tema.
+# Persistencia local (Room)
 
 ## Qué se guarda
+- **Perfil** (#10): uno solo. Nombre, correo, teléfono opcional, división, tamaño, intereses, URI de foto y (Nivel 3) preferencia de letra grande.
+- **Favoritos** (#27): el contenido completo, para verlo sin red. Sin duplicados; la acción alterna.
+- **Solicitudes de contacto** (#24).
+- El **catálogo** (#5) vive en código detrás de `repository/`; no va a Room.
 
-Un solo perfil local. No hay autenticación ni varias cuentas. Los favoritos guardan el id del contenido, sin duplicados: la acción alterna insertar y borrar. Perfil y favoritos siguen ahí después de cerrar la app.
+## Dónde
+- Entidades, DAO y `AppDatabase` en `data/local/`. Una sola base para toda la app; quien llegue primero la crea y el otro suma su entidad y sube la versión.
+- Repositorios en `repository/`. El ViewModel habla con el repositorio; la pantalla nunca ve el DAO.
+- Listas o enums con `TypeConverter`.
+- Dependencias de Room y KSP en `gradle/libs.versions.toml`.
 
-El catálogo demostrativo es local, detrás del repositorio. Puede vivir en memoria o en código; no hace falta meterlo en Room salvo que la issue lo pida. El modelo de contenido lleva id, título, descripción, categoría, formato, dificultad, duración, imagen y etiquetas.
-
-## Dónde va el código
-
-- Entidades, DAO y base en `data/local/`. Ese paquete no existe todavía; créalo en la issue de Room.
-- Repositorios en `repository/` (ya está en el repo). No abras `data/repository/` en paralelo.
-- El ViewModel habla con el repositorio. La pantalla no ve el DAO.
-- Versión y plugin de anotaciones se declaran en `gradle/libs.versions.toml` dentro de esa issue. No fijes una versión en la UI.
-
-## Forma explicable
-
-Nombres de operaciones directos: obtener perfil, guardar perfil, listar favoritos, agregar, quitar. Una fila de favorito por contenido. Expón flujos (`Flow`) desde el DAO y tradúcelos a estado en el ViewModel. Si falta el perfil, el estado es “sin perfil”, no un crash.
+## Forma
+- DAO expone `Flow` para lecturas y funciones `suspend` para escrituras.
+- Nombres directos: `observarPerfil`, `guardarPerfil`, `observarFavoritos`, `alternarFavorito`, `guardarSolicitud`.
+- Sin perfil, el estado es "sin perfil", no un crash.
+- Sin `allowMainThreadQueries`.

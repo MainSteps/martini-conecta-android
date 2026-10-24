@@ -1,36 +1,34 @@
 ---
-description: Convenciones MVVM, StateFlow y Compose para pantallas y ViewModels de Martini Conecta.
+description: Convenciones Kotlin, Compose y MVVM para pantallas, ViewModels y modelos.
 globs: "**/*.kt"
 alwaysApply: false
 ---
 
-# Kotlin y Compose
+# Kotlin, Compose y MVVM
 
-Paquete raíz: `com.mainsteps.martiniconecta`. Textos de interfaz en español. Nombres de archivo ya usados en el PR #20: `OnboardingScreen`, `InicioScreen`, `ExploreScreen`, `DetailScreen`, `FavoritosScreen`, `PerfilScreen`. No renombres esa convención en un cambio colateral.
+Paquete raíz `com.mainsteps.martiniconecta`. Textos de interfaz en español. Pantallas existentes: `OnboardingScreen`, `InicioScreen`, `ExploreScreen`, `DetailScreen`, `FavoritosScreen`, `PerfilScreen`; no las renombres en un cambio colateral.
 
 ## Capas
+- `ui/screens`: pinta un estado y emite eventos. No valida, no consulta datos, no decide permisos.
+- `ui/components`: componentes reutilizables del tema (#3): tarjeta de contenido, encabezado, estado vacío, botón de opción grande.
+- `viewmodel/`: un ViewModel por flujo. Expone **un** `StateFlow<XUiState>` inmutable (`data class`) y funciones de evento (`onNombreChange`, `onGuardar`). `MutableStateFlow` privado, `update { it.copy(...) }`.
+- `model/`: `Perfil`, `Contenido`, `SolicitudContacto`, enums (`Division`, `Dificultad`, `TamanoNegocio`).
+- `repository/`: única puerta de la UI a los datos. No crees `data/repository/`.
 
-- `ui/screens`: pinta un estado y envía eventos. Sin validar correo, sin armar SQL, sin decidir permisos.
-- `viewmodel/`: un ViewModel por flujo (perfil, inicio, exploración, favoritos). Expón un solo estado inmutable (`data class`) por `StateFlow` y funciones de evento (`onNombreChange`, `onGuardar`).
-- `model/`: perfil, contenido, categoría y estados de pantalla.
-- `repository/`: única puerta de la UI hacia datos. Ya existe; no crees otro paquete `data/repository/`.
-- `ui/components`: tarjetas, encabezados y estados vacíos cuando los pida la issue #3. Todavía no existe.
-- `ui/theme`: hoy es la paleta púrpura de la plantilla, con `dynamicColor = true`. La issue #3 la reemplaza. No inventes colores corporativos.
+## Estado y validación
+- La UI recolecta con `collectAsStateWithLifecycle()`.
+- Validadores como clases o funciones puras fuera de la UI (p. ej. `viewmodel/validation/`), llamadas por el ViewModel.
+- Un error por campo en el estado (`String?`). El error aparece al salir del campo o al guardar, no en cada letra.
+- Guardar habilitado solo si el estado es válido.
+- Estados de pantalla cuando apliquen: cargando, vacío, contenido, error.
+- Valores derivados (filtros, escalar receta) con `derivedStateOf` o `map`/`combine` sobre flows; no recalcules en cada recomposición.
 
-La UI observa el `StateFlow` y dibuja. Cuando se agregue `lifecycle-runtime-compose`, usa `collectAsStateWithLifecycle`. Hasta entonces no improvises un recolector propio dentro del Composable.
-
-## Formularios
-
-Campos del perfil (issues #6 y #7): nombre obligatorio, correo con formato, tipo de negocio, tamaño aproximado y al menos un interés. RUT y dirección quedan fuera. El teléfono no se agrega salvo que una issue lo pida.
-
-Los errores viajan en el estado, uno por campo, con mensaje junto al campo. El color no es el único indicador: acompaña con texto e ícono. Guardar solo si el ViewModel marca el formulario válido. Las reglas (largo, formato, intereses) son funciones del ViewModel o de un validador llamado por él, testeables sin Compose.
-
-## Estado de pantallas
-
-Modela carga, vacío, éxito y error cuando el flujo los tenga. Inicio saluda con el perfil y cambia el destacado según intereses. Exploración filtra en local por texto, categoría o formato. Favoritos alternan guardar y quitar, sin duplicar un contenido.
-
-Animaciones (issue #14, responsable Diego): feedback de favorito, validación o cambio de estado, con APIs de Compose. Sin librerías extra. No bloquean el toque. Si el sistema pide menos movimiento, la pantalla sigue siendo legible.
+## Compose
+- `Modifier` como primer parámetro opcional de cada Composable público.
+- Composables sin estado (state hoisting); el estado vive en el ViewModel.
+- Listas con `LazyColumn` y `key`.
+- Animaciones con APIs de Compose (`animateColorAsState`, `AnimatedVisibility`, `Crossfade`), ≤ 300 ms, solo de feedback.
+- Previews opcionales; no meten datos reales.
 
 ## Límites
-
-No agregues login, cuentas múltiples, red, cámara ni Room dentro de un Composable “porque ya estás en el archivo”. Cada uno tiene su issue. El catálogo de demostración (9 a 12 ítems, con id, título, descripción, categoría, formato, dificultad, duración, imagen y etiquetas) se presenta como ficticio, nunca como material oficial de Master Martini.
+No agregues login, red, librerías ni dependencias que la issue no pida. Versiones nuevas solo en `gradle/libs.versions.toml`.
