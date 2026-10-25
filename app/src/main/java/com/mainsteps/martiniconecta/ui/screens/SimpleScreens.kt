@@ -24,14 +24,3 @@ fun FavoritosScreen(
         modifier = modifier
     )
 }
-
-@Composable
-fun PerfilScreen(
-    modifier: Modifier = Modifier
-) {
-    ScreenPlaceholder(
-        title = "Perfil",
-        description = "Aquí podrás consultar y editar tu información personal.",
-        modifier = modifier
-    )
-}
