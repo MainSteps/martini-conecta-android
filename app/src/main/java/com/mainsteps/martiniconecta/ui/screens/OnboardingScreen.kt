@@ -16,13 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mainsteps.martiniconecta.ui.components.PerfilFormularioSelecciones
 import com.mainsteps.martiniconecta.ui.components.PerfilFormularioTexto
+import com.mainsteps.martiniconecta.ui.components.PerfilMensajeEstilo
+import com.mainsteps.martiniconecta.ui.components.PerfilMensajeValidacion
 import com.mainsteps.martiniconecta.ui.components.ScreenHeader
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 
 @Composable
 fun OnboardingScreen(
-    onContinue: () -> Unit
+    onPerfilGuardado: () -> Unit
 ) {
     val viewModel: ProfileViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -49,13 +52,32 @@ fun OnboardingScreen(
             onTelefonoFocusLost = viewModel::onTelefonoFocusLost
         )
 
+        PerfilFormularioSelecciones(
+            uiState = uiState,
+            onDivisionChange = viewModel::onDivisionChange,
+            onTamanoChange = viewModel::onTamanoChange,
+            onInteresToggle = viewModel::onInteresToggle
+        )
+
         Button(
-            onClick = onContinue,
+            onClick = {
+                if (viewModel.onGuardar()) {
+                    onPerfilGuardado()
+                }
+            },
+            enabled = uiState.esValido,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp)
         ) {
-            Text(text = "Comenzar")
+            Text(text = "Guardar")
+        }
+
+        if (!uiState.esValido) {
+            PerfilMensajeValidacion(
+                texto = "Completa los campos que faltan para guardar",
+                estilo = PerfilMensajeEstilo.Aviso
+            )
         }
     }
 }

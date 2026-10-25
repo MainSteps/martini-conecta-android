@@ -69,7 +69,7 @@ fun AppNavigation(
         ) {
             composable(Routes.Onboarding.route) {
                 OnboardingScreen(
-                    onContinue = {
+                    onPerfilGuardado = {
                         navController.navigate(Routes.Inicio.route) {
                             popUpTo(Routes.Onboarding.route) {
                                 inclusive = true
