@@ -40,7 +40,7 @@ fun AppBottomBar(
                 icon = {
                     Icon(
                         imageVector = destination.icon,
-                        contentDescription = destination.label
+                        contentDescription = null
                     )
                 },
                 label = {
