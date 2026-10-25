@@ -12,6 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mainsteps.martiniconecta.ui.screens.DetailScreen
+import com.mainsteps.martiniconecta.ui.components.DemoBanner
 import com.mainsteps.martiniconecta.ui.screens.ExploreScreen
 import com.mainsteps.martiniconecta.ui.screens.FavoritosScreen
 import com.mainsteps.martiniconecta.ui.screens.InicioScreen
@@ -41,6 +42,9 @@ fun AppNavigation(
     }
 
     Scaffold(
+        topBar = {
+            DemoBanner()
+        },
         bottomBar = {
             if (currentRoute in mainRoutes) {
                 AppBottomBar(
