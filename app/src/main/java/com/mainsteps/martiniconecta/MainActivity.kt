@@ -35,12 +35,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MartiniConecta_Grupo15Theme {
-                val profileViewModel: ProfileViewModel = viewModel(
-                    factory = profileViewModelFactory
-                )
-                val hasProfile by profileViewModel.hasProfile.collectAsStateWithLifecycle()
+            val profileViewModel: ProfileViewModel = viewModel(
+                factory = profileViewModelFactory
+            )
+            val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+            val hasProfile by profileViewModel.hasProfile.collectAsStateWithLifecycle()
 
+            MartiniConecta_Grupo15Theme(letraGrande = uiState.letraGrande) {
                 when (val tienePerfil = hasProfile) {
                     null -> {
                         Box(

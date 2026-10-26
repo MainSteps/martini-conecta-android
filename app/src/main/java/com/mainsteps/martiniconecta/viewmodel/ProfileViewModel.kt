@@ -15,6 +15,7 @@ import com.mainsteps.martiniconecta.viewmodel.validation.PerfilValidator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -131,6 +132,13 @@ class ProfileViewModel(
         }
     }
 
+    fun onLetraGrandeCambiada(activada: Boolean) {
+        _uiState.update { it.copy(letraGrande = activada) }
+        viewModelScope.launch {
+            persistirPerfilActual()
+        }
+    }
+
     fun onGuardar() {
         var valido = false
         var estadoValidado = _uiState.value
@@ -188,6 +196,20 @@ class ProfileViewModel(
         return copy(esValido = PerfilValidator.esFormularioValido(this))
     }
 
+    private suspend fun persistirPerfilActual() {
+        val state = _uiState.value
+        if (PerfilValidator.esFormularioValido(state)) {
+            perfilRepository.guardarPerfil(state.toEntity())
+            return
+        }
+        if (_hasProfile.value == true) {
+            val entity = perfilRepository.obtenerPerfil().first()
+            if (entity != null) {
+                perfilRepository.guardarPerfil(entity.copy(letraGrande = state.letraGrande))
+            }
+        }
+    }
+
     private fun PerfilEntity.toUiState(): PerfilUiState {
         return PerfilUiState(
             nombre = CampoTexto(valor = nombre),
@@ -196,6 +218,7 @@ class ProfileViewModel(
             division = CampoSeleccion(valor = division),
             tamano = CampoSeleccion(valor = tamano),
             intereses = CampoMultiSeleccion(seleccionados = intereses),
+            letraGrande = letraGrande,
         ).conEsValido()
     }
 
@@ -210,6 +233,7 @@ class ProfileViewModel(
             tamano = tamano.valor!!,
             intereses = intereses.seleccionados,
             fotoUri = null,
+            letraGrande = letraGrande,
         )
     }
 }

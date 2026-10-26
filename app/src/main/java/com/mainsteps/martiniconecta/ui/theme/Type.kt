@@ -6,6 +6,34 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+const val LETRA_GRANDE_FACTOR = 1.3f
+
+private fun TextStyle.escalado(factor: Float): TextStyle {
+    return copy(
+        fontSize = fontSize * factor,
+        lineHeight = lineHeight * factor,
+    )
+}
+
+fun Typography.escalada(factor: Float): Typography {
+    if (factor == 1f) {
+        return this
+    }
+    return copy(
+        headlineLarge = headlineLarge.escalado(factor),
+        headlineMedium = headlineMedium.escalado(factor),
+        headlineSmall = headlineSmall.escalado(factor),
+        titleLarge = titleLarge.escalado(factor),
+        titleMedium = titleMedium.escalado(factor),
+        titleSmall = titleSmall.escalado(factor),
+        bodyLarge = bodyLarge.escalado(factor),
+        bodyMedium = bodyMedium.escalado(factor),
+        bodySmall = bodySmall.escalado(factor),
+        labelLarge = labelLarge.escalado(factor),
+        labelMedium = labelMedium.escalado(factor),
+    )
+}
+
 val Typography = Typography(
     headlineLarge = TextStyle(
         fontFamily = FontFamily.SansSerif,

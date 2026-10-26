@@ -23,5 +23,6 @@ data class PerfilUiState(
     val tamano: CampoSeleccion<TamanoNegocio> = CampoSeleccion(),
     val intereses: CampoMultiSeleccion<Interes> = CampoMultiSeleccion(),
     val esValido: Boolean = false,
-    val guardadoExitoso: Boolean = false
+    val guardadoExitoso: Boolean = false,
+    val letraGrande: Boolean = false,
 )

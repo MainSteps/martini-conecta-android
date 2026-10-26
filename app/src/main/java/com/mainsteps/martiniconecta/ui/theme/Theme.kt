@@ -29,11 +29,17 @@ private val MartiniColorScheme = lightColorScheme(
 
 @Composable
 fun MartiniConecta_Grupo15Theme(
-    content: @Composable () -> Unit
+    letraGrande: Boolean = false,
+    content: @Composable () -> Unit,
 ) {
+    val typography = if (letraGrande) {
+        Typography.escalada(LETRA_GRANDE_FACTOR)
+    } else {
+        Typography
+    }
     MaterialTheme(
         colorScheme = MartiniColorScheme,
-        typography = Typography,
+        typography = typography,
         content = content
     )
 }
