@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mainsteps.martiniconecta.ui.components.PerfilFormularioSelecciones
@@ -25,9 +28,14 @@ import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 
 @Composable
 fun PerfilScreen(
-    modifier: Modifier = Modifier
+    profileViewModelFactory: ViewModelProvider.Factory,
+    modifier: Modifier = Modifier,
 ) {
-    val viewModel: ProfileViewModel = viewModel()
+    val activity = LocalContext.current as ComponentActivity
+    val viewModel: ProfileViewModel = viewModel(
+        viewModelStoreOwner = activity,
+        factory = profileViewModelFactory,
+    )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
