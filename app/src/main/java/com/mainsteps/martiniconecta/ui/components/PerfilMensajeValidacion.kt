@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 enum class PerfilMensajeEstilo {
@@ -38,8 +41,14 @@ fun PerfilMensajeValidacion(
         PerfilMensajeEstilo.Aviso -> Icons.Filled.Warning
     }
 
+    val modifierMensaje = if (estilo == PerfilMensajeEstilo.Exito) {
+        modifier.semantics { liveRegion = LiveRegionMode.Polite }
+    } else {
+        modifier
+    }
+
     Row(
-        modifier = modifier,
+        modifier = modifierMensaje,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {

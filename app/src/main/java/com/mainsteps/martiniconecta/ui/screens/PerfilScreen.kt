@@ -69,6 +69,13 @@ fun PerfilScreen(
             Text(text = "Guardar")
         }
 
+        if (uiState.guardadoExitoso) {
+            PerfilMensajeValidacion(
+                texto = "Perfil guardado correctamente",
+                estilo = PerfilMensajeEstilo.Exito
+            )
+        }
+
         if (!uiState.esValido) {
             PerfilMensajeValidacion(
                 texto = "Completa los campos que faltan para guardar",

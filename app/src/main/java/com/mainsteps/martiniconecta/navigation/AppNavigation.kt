@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +19,8 @@ import com.mainsteps.martiniconecta.ui.screens.FavoritosScreen
 import com.mainsteps.martiniconecta.ui.screens.InicioScreen
 import com.mainsteps.martiniconecta.ui.screens.OnboardingScreen
 import com.mainsteps.martiniconecta.ui.screens.PerfilScreen
+
+private const val PERFIL_GUARDADO_CONFIRMADO = "perfilGuardadoConfirmado"
 
 @Composable
 fun AppNavigation(
@@ -75,12 +78,23 @@ fun AppNavigation(
                                 inclusive = true
                             }
                         }
+                        navController.getBackStackEntry(Routes.Inicio.route)
+                            .savedStateHandle[PERFIL_GUARDADO_CONFIRMADO] = true
                     }
                 )
             }
 
-            composable(Routes.Inicio.route) {
-                InicioScreen()
+            composable(Routes.Inicio.route) { backStackEntry ->
+                val perfilGuardadoConfirmado by backStackEntry.savedStateHandle
+                    .getStateFlow(PERFIL_GUARDADO_CONFIRMADO, false)
+                    .collectAsStateWithLifecycle()
+
+                InicioScreen(
+                    perfilGuardadoConfirmado = perfilGuardadoConfirmado,
+                    onConfirmacionPerfilLeida = {
+                        backStackEntry.savedStateHandle[PERFIL_GUARDADO_CONFIRMADO] = false
+                    }
+                )
             }
 
             composable(Routes.Explorar.route) {
