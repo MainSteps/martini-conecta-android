@@ -73,26 +73,16 @@ class ProfileViewModel : ViewModel() {
 
     fun onDivisionChange(division: Division) {
         actualizarTexto { state ->
-            val error = if (state.division.error != null) {
-                PerfilValidator.errorDivision(division)
-            } else {
-                null
-            }
             state.copy(
-                division = state.division.copy(valor = division, error = error)
+                division = state.division.copy(valor = division, error = null)
             )
         }
     }
 
     fun onTamanoChange(tamano: TamanoNegocio) {
         actualizarTexto { state ->
-            val error = if (state.tamano.error != null) {
-                PerfilValidator.errorTamano(tamano)
-            } else {
-                null
-            }
             state.copy(
-                tamano = state.tamano.copy(valor = tamano, error = error)
+                tamano = state.tamano.copy(valor = tamano, error = null)
             )
         }
     }
@@ -105,15 +95,10 @@ class ProfileViewModel : ViewModel() {
             } else {
                 seleccionados.add(interes)
             }
-            val error = if (state.intereses.error != null) {
-                PerfilValidator.errorIntereses(seleccionados)
-            } else {
-                null
-            }
             state.copy(
                 intereses = state.intereses.copy(
                     seleccionados = seleccionados,
-                    error = error
+                    error = PerfilValidator.errorIntereses(seleccionados)
                 )
             )
         }
@@ -143,13 +128,17 @@ class ProfileViewModel : ViewModel() {
                 )
             ).conEsValido()
             valido = actualizado.esValido
-            actualizado
+            if (valido) {
+                actualizado.copy(guardadoExitoso = true)
+            } else {
+                actualizado.copy(guardadoExitoso = false)
+            }
         }
         return valido
     }
 
     private fun actualizarTexto(transform: (PerfilUiState) -> PerfilUiState) {
-        _uiState.update { transform(it).conEsValido() }
+        _uiState.update { transform(it).copy(guardadoExitoso = false).conEsValido() }
     }
 
     private fun CampoTexto.actualizado(
