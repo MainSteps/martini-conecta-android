@@ -1,5 +1,10 @@
 package com.mainsteps.martiniconecta.ui.screens
 
+import android.content.Intent
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,19 +13,23 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.activity.ComponentActivity
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mainsteps.martiniconecta.ui.components.PerfilFormularioSelecciones
 import com.mainsteps.martiniconecta.ui.components.PerfilFormularioTexto
+import com.mainsteps.martiniconecta.ui.components.PerfilFotoAvatar
 import com.mainsteps.martiniconecta.ui.components.PerfilMensajeEstilo
 import com.mainsteps.martiniconecta.ui.components.PerfilMensajeValidacion
 import com.mainsteps.martiniconecta.ui.components.ScreenHeader
@@ -38,6 +47,22 @@ fun PerfilScreen(
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val galeriaLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+    ) { uri ->
+        if (uri == null) {
+            return@rememberLauncherForActivityResult
+        }
+        try {
+            activity.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION,
+            )
+        } catch (_: SecurityException) {
+        }
+        viewModel.onFotoSeleccionada(uri.toString())
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -49,6 +74,27 @@ fun PerfilScreen(
             title = "Tu perfil",
             subtitle = "Consulta y edita tu información personal."
         )
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PerfilFotoAvatar(fotoUri = uiState.fotoUri)
+            OutlinedButton(
+                onClick = {
+                    galeriaLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp)
+                    .semantics { contentDescription = "Elegir foto de perfil desde la galería" },
+            ) {
+                Text(text = "Elegir de galería")
+            }
+        }
 
         PerfilFormularioTexto(
             uiState = uiState,
