@@ -16,6 +16,7 @@ data class PerfilEntity(
     val tamano: TamanoNegocio,
     val intereses: Set<Interes>,
     val fotoUri: String?,
+    val letraGrande: Boolean = false,
 ) {
     companion object {
         const val PERFIL_ID = 1

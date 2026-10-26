@@ -24,5 +24,6 @@ data class PerfilUiState(
     val intereses: CampoMultiSeleccion<Interes> = CampoMultiSeleccion(),
     val fotoUri: String? = null,
     val esValido: Boolean = false,
-    val guardadoExitoso: Boolean = false
+    val guardadoExitoso: Boolean = false,
+    val letraGrande: Boolean = false,
 )
