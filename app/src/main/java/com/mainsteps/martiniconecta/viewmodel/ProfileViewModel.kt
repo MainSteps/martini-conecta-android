@@ -1,21 +1,49 @@
 package com.mainsteps.martiniconecta.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mainsteps.martiniconecta.data.local.PerfilEntity
+import com.mainsteps.martiniconecta.model.CampoMultiSeleccion
+import com.mainsteps.martiniconecta.model.CampoSeleccion
 import com.mainsteps.martiniconecta.model.CampoTexto
 import com.mainsteps.martiniconecta.model.Division
 import com.mainsteps.martiniconecta.model.Interes
 import com.mainsteps.martiniconecta.model.PerfilUiState
 import com.mainsteps.martiniconecta.model.TamanoNegocio
+import com.mainsteps.martiniconecta.repository.PerfilRepository
 import com.mainsteps.martiniconecta.viewmodel.validation.PerfilValidator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(
+    private val perfilRepository: PerfilRepository,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PerfilUiState())
     val uiState: StateFlow<PerfilUiState> = _uiState.asStateFlow()
+
+    private val _hasProfile = MutableStateFlow<Boolean?>(null)
+    val hasProfile: StateFlow<Boolean?> = _hasProfile.asStateFlow()
+
+    private var formularioHidratado = false
+
+    init {
+        viewModelScope.launch {
+            perfilRepository.obtenerPerfil().collect { entity ->
+                _hasProfile.value = entity != null
+                if (!formularioHidratado) {
+                    formularioHidratado = true
+                    if (entity != null) {
+                        _uiState.value = entity.toUiState()
+                    }
+                }
+            }
+        }
+    }
 
     fun onNombreChange(valor: String) {
         actualizarTexto { state ->
@@ -104,8 +132,16 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    fun onGuardar(): Boolean {
+    fun onLetraGrandeCambiada(activada: Boolean) {
+        _uiState.update { it.copy(letraGrande = activada) }
+        viewModelScope.launch {
+            persistirPerfilActual()
+        }
+    }
+
+    fun onGuardar() {
         var valido = false
+        var estadoValidado = _uiState.value
         _uiState.update { state ->
             val actualizado = state.copy(
                 nombre = state.nombre.copy(
@@ -128,13 +164,16 @@ class ProfileViewModel : ViewModel() {
                 )
             ).conEsValido()
             valido = actualizado.esValido
-            if (valido) {
-                actualizado.copy(guardadoExitoso = true)
-            } else {
-                actualizado.copy(guardadoExitoso = false)
-            }
+            estadoValidado = actualizado
+            actualizado.copy(guardadoExitoso = false)
         }
-        return valido
+        if (!valido) {
+            return
+        }
+        viewModelScope.launch {
+            perfilRepository.guardarPerfil(estadoValidado.toEntity())
+            _uiState.update { it.copy(guardadoExitoso = true).conEsValido() }
+        }
     }
 
     private fun actualizarTexto(transform: (PerfilUiState) -> PerfilUiState) {
@@ -155,5 +194,46 @@ class ProfileViewModel : ViewModel() {
 
     private fun PerfilUiState.conEsValido(): PerfilUiState {
         return copy(esValido = PerfilValidator.esFormularioValido(this))
+    }
+
+    private suspend fun persistirPerfilActual() {
+        val state = _uiState.value
+        if (PerfilValidator.esFormularioValido(state)) {
+            perfilRepository.guardarPerfil(state.toEntity())
+            return
+        }
+        if (_hasProfile.value == true) {
+            val entity = perfilRepository.obtenerPerfil().first()
+            if (entity != null) {
+                perfilRepository.guardarPerfil(entity.copy(letraGrande = state.letraGrande))
+            }
+        }
+    }
+
+    private fun PerfilEntity.toUiState(): PerfilUiState {
+        return PerfilUiState(
+            nombre = CampoTexto(valor = nombre),
+            correo = CampoTexto(valor = email),
+            telefono = CampoTexto(valor = telefono.orEmpty()),
+            division = CampoSeleccion(valor = division),
+            tamano = CampoSeleccion(valor = tamano),
+            intereses = CampoMultiSeleccion(seleccionados = intereses),
+            letraGrande = letraGrande,
+        ).conEsValido()
+    }
+
+    private fun PerfilUiState.toEntity(): PerfilEntity {
+        val telefonoLimpio = telefono.valor.trim()
+        return PerfilEntity(
+            id = PerfilEntity.PERFIL_ID,
+            nombre = nombre.valor.trim(),
+            email = correo.valor.trim(),
+            telefono = telefonoLimpio.takeIf { it.isNotEmpty() },
+            division = division.valor!!,
+            tamano = tamano.valor!!,
+            intereses = intereses.seleccionados,
+            fotoUri = null,
+            letraGrande = letraGrande,
+        )
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,7 +25,8 @@ private const val PERFIL_GUARDADO_CONFIRMADO = "perfilGuardadoConfirmado"
 
 @Composable
 fun AppNavigation(
-    hasProfile: Boolean = false
+    hasProfile: Boolean,
+    profileViewModelFactory: ViewModelProvider.Factory,
 ) {
     val navController = rememberNavController()
 
@@ -72,6 +74,7 @@ fun AppNavigation(
         ) {
             composable(Routes.Onboarding.route) {
                 OnboardingScreen(
+                    profileViewModelFactory = profileViewModelFactory,
                     onPerfilGuardado = {
                         navController.navigate(Routes.Inicio.route) {
                             popUpTo(Routes.Onboarding.route) {
@@ -112,7 +115,9 @@ fun AppNavigation(
             }
 
             composable(Routes.Perfil.route) {
-                PerfilScreen()
+                PerfilScreen(
+                    profileViewModelFactory = profileViewModelFactory,
+                )
             }
 
             composable(
