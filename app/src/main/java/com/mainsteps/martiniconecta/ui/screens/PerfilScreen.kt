@@ -1,7 +1,7 @@
 package com.mainsteps.martiniconecta.ui.screens
 
 import android.content.Intent
-import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,9 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,9 +45,10 @@ fun PerfilScreen(
     profileViewModelFactory: ViewModelProvider.Factory,
     modifier: Modifier = Modifier,
 ) {
-    val activity = LocalContext.current as ComponentActivity
+    val viewModelStoreOwner = LocalActivity.current as? ViewModelStoreOwner ?: return
+    val context = LocalContext.current
     val viewModel: ProfileViewModel = viewModel(
-        viewModelStoreOwner = activity,
+        viewModelStoreOwner = viewModelStoreOwner,
         factory = profileViewModelFactory,
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -60,7 +60,7 @@ fun PerfilScreen(
             return@rememberLauncherForActivityResult
         }
         try {
-            activity.contentResolver.takePersistableUriPermission(
+            context.contentResolver.takePersistableUriPermission(
                 uri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION,
             )
@@ -95,8 +95,7 @@ fun PerfilScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 48.dp)
-                    .semantics { contentDescription = "Elegir foto de perfil desde la galería" },
+                    .heightIn(min = 48.dp),
             ) {
                 Text(text = "Elegir de galería")
             }
