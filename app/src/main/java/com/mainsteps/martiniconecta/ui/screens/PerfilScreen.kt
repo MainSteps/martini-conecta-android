@@ -1,6 +1,6 @@
 package com.mainsteps.martiniconecta.ui.screens
 
-import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,10 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,9 +38,9 @@ fun PerfilScreen(
     profileViewModelFactory: ViewModelProvider.Factory,
     modifier: Modifier = Modifier,
 ) {
-    val activity = LocalContext.current as ComponentActivity
+    val viewModelStoreOwner = LocalActivity.current as? ViewModelStoreOwner ?: return
     val viewModel: ProfileViewModel = viewModel(
-        viewModelStoreOwner = activity,
+        viewModelStoreOwner = viewModelStoreOwner,
         factory = profileViewModelFactory,
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
