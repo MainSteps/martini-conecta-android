@@ -132,6 +132,13 @@ class ProfileViewModel(
         }
     }
 
+    fun onFotoSeleccionada(uri: String) {
+        _uiState.update { it.copy(fotoUri = uri, guardadoExitoso = false) }
+        viewModelScope.launch {
+            perfilRepository.guardarFotoUri(uri)
+        }
+    }
+
     fun onLetraGrandeCambiada(activada: Boolean) {
         _uiState.update { it.copy(letraGrande = activada) }
         viewModelScope.launch {
@@ -218,6 +225,7 @@ class ProfileViewModel(
             division = CampoSeleccion(valor = division),
             tamano = CampoSeleccion(valor = tamano),
             intereses = CampoMultiSeleccion(seleccionados = intereses),
+            fotoUri = fotoUri,
             letraGrande = letraGrande,
         ).conEsValido()
     }
@@ -232,7 +240,7 @@ class ProfileViewModel(
             division = division.valor!!,
             tamano = tamano.valor!!,
             intereses = intereses.seleccionados,
-            fotoUri = null,
+            fotoUri = fotoUri,
             letraGrande = letraGrande,
         )
     }

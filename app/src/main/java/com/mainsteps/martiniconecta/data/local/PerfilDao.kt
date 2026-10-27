@@ -11,6 +11,9 @@ interface PerfilDao {
     @Query("SELECT * FROM perfil WHERE id = 1")
     fun obtenerPerfil(): Flow<PerfilEntity?>
 
+    @Query("SELECT * FROM perfil WHERE id = 1")
+    suspend fun obtenerPerfilActual(): PerfilEntity?
+
     @Upsert
     suspend fun guardarPerfil(perfil: PerfilEntity)
 }

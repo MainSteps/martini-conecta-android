@@ -13,4 +13,9 @@ class PerfilRepository(
     suspend fun guardarPerfil(perfil: PerfilEntity) {
         perfilDao.guardarPerfil(perfil)
     }
+
+    suspend fun guardarFotoUri(fotoUri: String?) {
+        val perfil = perfilDao.obtenerPerfilActual() ?: return
+        perfilDao.guardarPerfil(perfil.copy(fotoUri = fotoUri))
+    }
 }
