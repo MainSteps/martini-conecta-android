@@ -127,13 +127,8 @@ fun AppNavigation(
                         type = NavType.StringType
                     }
                 )
-            ) { navBackStackEntry ->
-                val itemId = navBackStackEntry.arguments
-                    ?.getString("itemId")
-                    .orEmpty()
-
+            ) {
                 DetailScreen(
-                    itemId = itemId,
                     onBack = {
                         navController.popBackStack()
                     }
