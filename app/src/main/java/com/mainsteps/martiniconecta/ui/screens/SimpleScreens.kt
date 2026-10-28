@@ -45,14 +45,3 @@ fun InicioScreen(
         )
     }
 }
-
-@Composable
-fun FavoritosScreen(
-    modifier: Modifier = Modifier
-) {
-    ScreenPlaceholder(
-        title = "Favoritos",
-        description = "Aquí encontrarás el contenido que hayas guardado.",
-        modifier = modifier
-    )
-}

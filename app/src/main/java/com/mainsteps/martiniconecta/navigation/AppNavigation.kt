@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,6 +21,7 @@ import com.mainsteps.martiniconecta.ui.screens.FavoritosScreen
 import com.mainsteps.martiniconecta.ui.screens.InicioScreen
 import com.mainsteps.martiniconecta.ui.screens.OnboardingScreen
 import com.mainsteps.martiniconecta.ui.screens.PerfilScreen
+import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModel
 
 private const val PERFIL_GUARDADO_CONFIRMADO = "perfilGuardadoConfirmado"
 
@@ -27,8 +29,13 @@ private const val PERFIL_GUARDADO_CONFIRMADO = "perfilGuardadoConfirmado"
 fun AppNavigation(
     hasProfile: Boolean,
     profileViewModelFactory: ViewModelProvider.Factory,
+    favoritosViewModelFactory: ViewModelProvider.Factory,
 ) {
     val navController = rememberNavController()
+    val favoritosViewModel: FavoritosViewModel = viewModel(
+        factory = favoritosViewModelFactory,
+    )
+    val favoritosUiState by favoritosViewModel.uiState.collectAsStateWithLifecycle()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -111,7 +118,12 @@ fun AppNavigation(
             }
 
             composable(Routes.Favoritos.route) {
-                FavoritosScreen()
+                FavoritosScreen(
+                    favoritos = favoritosUiState.favoritos,
+                    onOpenDetail = { itemId ->
+                        navController.navigate(Routes.Detalle.createRoute(itemId))
+                    },
+                )
             }
 
             composable(Routes.Perfil.route) {
@@ -127,16 +139,14 @@ fun AppNavigation(
                         type = NavType.StringType
                     }
                 )
-            ) { navBackStackEntry ->
-                val itemId = navBackStackEntry.arguments
-                    ?.getString("itemId")
-                    .orEmpty()
-
+            ) { detailBackStackEntry ->
                 DetailScreen(
-                    itemId = itemId,
                     onBack = {
                         navController.popBackStack()
-                    }
+                    },
+                    isFavorite = detailBackStackEntry.arguments
+                        ?.getString("itemId") in favoritosUiState.idsFavoritos,
+                    onFavorite = favoritosViewModel::alternarFavorito,
                 )
             }
         }
