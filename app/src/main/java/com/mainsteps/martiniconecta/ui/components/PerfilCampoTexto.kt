@@ -22,12 +22,14 @@ fun PerfilCampoTexto(
     keyboardOptions: KeyboardOptions,
     modifier: Modifier = Modifier,
     placeholder: String? = null,
-    textoExito: String = "Correcto"
+    textoExito: String = "Correcto",
+    mostrarValidacion: Boolean = false,
 ) {
     var fueTocado by rememberSaveable { mutableStateOf(false) }
     var teniaFoco by remember { mutableStateOf(false) }
-    val mostrarError = fueTocado && error != null
-    val mostrarExito = fueTocado && error == null
+    val debeMostrarValidacion = fueTocado || mostrarValidacion
+    val mostrarError = debeMostrarValidacion && error != null
+    val mostrarExito = debeMostrarValidacion && error == null
 
     OutlinedTextField(
         value = valor,
@@ -45,7 +47,7 @@ fun PerfilCampoTexto(
             { Text(text = hint) }
         },
         isError = mostrarError,
-        supportingText = if (fueTocado) {
+        supportingText = if (debeMostrarValidacion) {
             {
                 PerfilValidacionAnimada(visible = mostrarError) {
                     if (error != null) {

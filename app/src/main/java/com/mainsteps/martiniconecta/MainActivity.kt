@@ -15,11 +15,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mainsteps.martiniconecta.data.local.AppDatabase
 import com.mainsteps.martiniconecta.navigation.AppNavigation
 import com.mainsteps.martiniconecta.repository.PerfilRepository
+import com.mainsteps.martiniconecta.repository.ContactoRepository
 import com.mainsteps.martiniconecta.repository.FavoritosRepository
 import com.mainsteps.martiniconecta.ui.theme.MartiniConecta_Grupo15Theme
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModelFactory
+import com.mainsteps.martiniconecta.viewmodel.ContactoViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -34,6 +36,13 @@ class MainActivity : ComponentActivity() {
     private val favoritosViewModelFactory by lazy {
         FavoritosViewModelFactory(
             FavoritosRepository(AppDatabase.getInstance(applicationContext).favoritoDao())
+        )
+    }
+
+    private val contactoViewModelFactory by lazy {
+        ContactoViewModelFactory(
+            ContactoRepository(AppDatabase.getInstance(applicationContext).solicitudDao()),
+            perfilRepository,
         )
     }
 
@@ -65,6 +74,7 @@ class MainActivity : ComponentActivity() {
                             hasProfile = tienePerfil,
                             profileViewModelFactory = profileViewModelFactory,
                             favoritosViewModelFactory = favoritosViewModelFactory,
+                            contactoViewModelFactory = contactoViewModelFactory,
                         )
                     }
                 }
