@@ -20,6 +20,7 @@ import com.mainsteps.martiniconecta.ui.theme.MartiniConecta_Grupo15Theme
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModelFactory
+import com.mainsteps.martiniconecta.viewmodel.InicioViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -35,6 +36,10 @@ class MainActivity : ComponentActivity() {
         FavoritosViewModelFactory(
             FavoritosRepository(AppDatabase.getInstance(applicationContext).favoritoDao())
         )
+    }
+
+    private val inicioViewModelFactory by lazy {
+        InicioViewModelFactory(perfilRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +70,7 @@ class MainActivity : ComponentActivity() {
                             hasProfile = tienePerfil,
                             profileViewModelFactory = profileViewModelFactory,
                             favoritosViewModelFactory = favoritosViewModelFactory,
+                            inicioViewModelFactory = inicioViewModelFactory,
                         )
                     }
                 }
