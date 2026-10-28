@@ -1,6 +1,8 @@
 package com.mainsteps.martiniconecta.ui.screens
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -22,6 +24,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,12 +38,14 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.ContextCompat
 import com.mainsteps.martiniconecta.ui.components.PerfilFormularioSelecciones
 import com.mainsteps.martiniconecta.ui.components.PerfilFormularioTexto
 import com.mainsteps.martiniconecta.ui.components.PerfilFotoAvatar
 import com.mainsteps.martiniconecta.ui.components.PerfilMensajeEstilo
 import com.mainsteps.martiniconecta.ui.components.PerfilMensajeValidacion
 import com.mainsteps.martiniconecta.ui.components.ScreenHeader
+import com.mainsteps.martiniconecta.util.FotoHelper
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 
 @Composable
@@ -52,6 +60,8 @@ fun PerfilScreen(
         factory = profileViewModelFactory,
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var fotoCamaraPendiente by rememberSaveable { mutableStateOf<String?>(null) }
+    var mensajeCamara by rememberSaveable { mutableStateOf<String?>(null) }
 
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -67,6 +77,36 @@ fun PerfilScreen(
         } catch (_: SecurityException) {
         }
         viewModel.onFotoSeleccionada(uri.toString())
+    }
+
+    val camaraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+    ) { fotoTomada ->
+        val uri = fotoCamaraPendiente
+        fotoCamaraPendiente = null
+        if (fotoTomada && uri != null) {
+            viewModel.onFotoSeleccionada(uri)
+            mensajeCamara = null
+        }
+    }
+
+    val abrirCamara = remember(context, camaraLauncher) {
+        {
+            val uri = FotoHelper.crearUri(context)
+            fotoCamaraPendiente = uri.toString()
+            mensajeCamara = null
+            camaraLauncher.launch(uri)
+        }
+    }
+
+    val permisoCamaraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { concedido ->
+        if (concedido) {
+            abrirCamara()
+        } else {
+            mensajeCamara = "La cámara necesita permiso. Puedes seguir sin foto o elegir una de la galería."
+        }
     }
 
     Column(
@@ -87,7 +127,7 @@ fun PerfilScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             PerfilFotoAvatar(fotoUri = uiState.fotoUri)
-            OutlinedButton(
+            Button(
                 onClick = {
                     galeriaLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
@@ -98,6 +138,33 @@ fun PerfilScreen(
                     .heightIn(min = 48.dp),
             ) {
                 Text(text = "Elegir de galería")
+            }
+
+            OutlinedButton(
+                onClick = {
+                    if (
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.CAMERA,
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        abrirCamara()
+                    } else {
+                        permisoCamaraLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp),
+            ) {
+                Text(text = "Tomar foto")
+            }
+
+            if (mensajeCamara != null) {
+                PerfilMensajeValidacion(
+                    texto = mensajeCamara.orEmpty(),
+                    estilo = PerfilMensajeEstilo.Aviso,
+                )
             }
         }
 
