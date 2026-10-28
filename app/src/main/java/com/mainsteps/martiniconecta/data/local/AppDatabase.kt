@@ -7,14 +7,16 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [PerfilEntity::class],
-    version = 2,
+    entities = [PerfilEntity::class, FavoritoEntity::class],
+    version = 3,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun perfilDao(): PerfilDao
+
+    abstract fun favoritoDao(): FavoritoDao
 
     companion object {
         private const val DATABASE_NAME = "martini_conecta.db"
@@ -34,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 DATABASE_NAME,
             )
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
         }
     }
