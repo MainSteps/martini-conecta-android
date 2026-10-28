@@ -22,6 +22,7 @@ import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 import com.mainsteps.martiniconecta.viewmodel.ProfileViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.ContactoViewModelFactory
+import com.mainsteps.martiniconecta.viewmodel.InicioViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -44,6 +45,10 @@ class MainActivity : ComponentActivity() {
             ContactoRepository(AppDatabase.getInstance(applicationContext).solicitudDao()),
             perfilRepository,
         )
+    }
+
+    private val inicioViewModelFactory by lazy {
+        InicioViewModelFactory(perfilRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +80,7 @@ class MainActivity : ComponentActivity() {
                             profileViewModelFactory = profileViewModelFactory,
                             favoritosViewModelFactory = favoritosViewModelFactory,
                             contactoViewModelFactory = contactoViewModelFactory,
+                            inicioViewModelFactory = inicioViewModelFactory,
                         )
                     }
                 }

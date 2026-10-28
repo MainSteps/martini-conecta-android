@@ -38,6 +38,7 @@ fun AppNavigation(
     profileViewModelFactory: ViewModelProvider.Factory,
     favoritosViewModelFactory: ViewModelProvider.Factory,
     contactoViewModelFactory: ViewModelProvider.Factory,
+    inicioViewModelFactory: ViewModelProvider.Factory,
 ) {
     val navController = rememberNavController()
     val favoritosViewModel: FavoritosViewModel = viewModel(
@@ -108,10 +109,14 @@ fun AppNavigation(
                     .collectAsStateWithLifecycle()
 
                 InicioScreen(
+                    onOpenDetail = { itemId ->
+                        navController.navigate(Routes.Detalle.createRoute(itemId))
+                    },
+                    inicioViewModelFactory = inicioViewModelFactory,
                     perfilGuardadoConfirmado = perfilGuardadoConfirmado,
                     onConfirmacionPerfilLeida = {
                         backStackEntry.savedStateHandle[PERFIL_GUARDADO_CONFIRMADO] = false
-                    }
+                    },
                 )
             }
 
