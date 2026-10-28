@@ -26,6 +26,8 @@ fun PerfilCampoTexto(
 ) {
     var fueTocado by rememberSaveable { mutableStateOf(false) }
     var teniaFoco by remember { mutableStateOf(false) }
+    val mostrarError = fueTocado && error != null
+    val mostrarExito = fueTocado && error == null
 
     OutlinedTextField(
         value = valor,
@@ -42,25 +44,26 @@ fun PerfilCampoTexto(
         placeholder = placeholder?.let { hint ->
             { Text(text = hint) }
         },
-        isError = error != null,
-        supportingText = when {
-            error != null -> {
-                {
-                    PerfilMensajeValidacion(
-                        texto = error,
-                        estilo = PerfilMensajeEstilo.Error
-                    )
+        isError = mostrarError,
+        supportingText = if (fueTocado) {
+            {
+                PerfilValidacionAnimada(visible = mostrarError) {
+                    if (error != null) {
+                        PerfilMensajeValidacion(
+                            texto = error,
+                            estilo = PerfilMensajeEstilo.Error
+                        )
+                    }
                 }
-            }
-            fueTocado -> {
-                {
+                PerfilValidacionAnimada(visible = mostrarExito) {
                     PerfilMensajeValidacion(
                         texto = textoExito,
                         estilo = PerfilMensajeEstilo.Exito
                     )
                 }
             }
-            else -> null
+        } else {
+            null
         },
         keyboardOptions = keyboardOptions,
         singleLine = true

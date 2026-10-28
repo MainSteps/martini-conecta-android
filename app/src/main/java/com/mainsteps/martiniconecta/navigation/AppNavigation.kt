@@ -1,5 +1,10 @@
 package com.mainsteps.martiniconecta.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -24,6 +29,7 @@ import com.mainsteps.martiniconecta.ui.screens.PerfilScreen
 import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModel
 
 private const val PERFIL_GUARDADO_CONFIRMADO = "perfilGuardadoConfirmado"
+private const val DuracionTransicionDetalleMs = 300
 
 @Composable
 fun AppNavigation(
@@ -138,7 +144,21 @@ fun AppNavigation(
                     navArgument("itemId") {
                         type = NavType.StringType
                     }
-                )
+                ),
+                enterTransition = {
+                    fadeIn(tween(DuracionTransicionDetalleMs)) +
+                        slideInHorizontally(
+                            animationSpec = tween(DuracionTransicionDetalleMs),
+                            initialOffsetX = { anchoCompleto -> anchoCompleto },
+                        )
+                },
+                popExitTransition = {
+                    fadeOut(tween(DuracionTransicionDetalleMs)) +
+                        slideOutHorizontally(
+                            animationSpec = tween(DuracionTransicionDetalleMs),
+                            targetOffsetX = { anchoCompleto -> anchoCompleto },
+                        )
+                },
             ) { detailBackStackEntry ->
                 DetailScreen(
                     onBack = {

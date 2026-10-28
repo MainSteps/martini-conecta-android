@@ -1,6 +1,12 @@
 package com.mainsteps.martiniconecta.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +35,8 @@ import com.mainsteps.martiniconecta.ui.components.EmptyState
 import com.mainsteps.martiniconecta.ui.components.ScreenHeader
 import com.mainsteps.martiniconecta.viewmodel.ExploreViewModel
 
+private const val DuracionTransicionExplorarMs = 300
+
 @Composable
 fun ExploreScreen(
     onOpenDetail: (String) -> Unit,
@@ -37,61 +45,66 @@ fun ExploreScreen(
 ) {
     val uiState by exploreViewModel.uiState.collectAsStateWithLifecycle()
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 24.dp),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            ScreenHeader(
-                title = "Explorar recetas",
-                subtitle = "Encuentra preparaciones para cada división de Martini.",
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-        }
+        ScreenHeader(
+            title = "Explorar recetas",
+            subtitle = "Encuentra preparaciones para cada división de Martini.",
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
 
-        item {
-            OutlinedTextField(
-                value = uiState.busqueda,
-                onValueChange = exploreViewModel::actualizarBusqueda,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                label = { Text(text = "Buscar por título") },
-                placeholder = { Text(text = "Ejemplo: chocolate") },
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null
-                    )
-                },
-                trailingIcon = if (uiState.busqueda.isNotEmpty()) {
-                    {
-                        IconButton(
-                            onClick = { exploreViewModel.actualizarBusqueda("") }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Limpiar búsqueda"
-                            )
-                        }
+        OutlinedTextField(
+            value = uiState.busqueda,
+            onValueChange = exploreViewModel::actualizarBusqueda,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            label = { Text(text = "Buscar por título") },
+            placeholder = { Text(text = "Ejemplo: chocolate") },
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null
+                )
+            },
+            trailingIcon = if (uiState.busqueda.isNotEmpty()) {
+                {
+                    IconButton(
+                        onClick = { exploreViewModel.actualizarBusqueda("") }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Limpiar búsqueda"
+                        )
                     }
-                } else {
-                    null
                 }
-            )
-        }
+            } else {
+                null
+            }
+        )
 
-        item {
-            DivisionFilters(
-                selectedDivision = uiState.divisionSeleccionada,
-                onDivisionSelected = exploreViewModel::seleccionarDivision
-            )
-        }
+        DivisionFilters(
+            selectedDivision = uiState.divisionSeleccionada,
+            onDivisionSelected = exploreViewModel::seleccionarDivision
+        )
 
-        if (uiState.recetas.isEmpty()) {
-            item {
+        AnimatedContent(
+            targetState = uiState.recetas.isEmpty(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            transitionSpec = {
+                fadeIn(tween(DuracionTransicionExplorarMs)) togetherWith
+                    fadeOut(tween(DuracionTransicionExplorarMs))
+            },
+            label = "ExploreResultados",
+        ) { sinResultados ->
+            if (sinResultados) {
                 EmptyState(
                     title = "No encontramos recetas",
                     message = "Prueba con otro título o selecciona una división diferente.",
@@ -99,19 +112,26 @@ fun ExploreScreen(
                     actionLabel = "Limpiar filtros",
                     onAction = exploreViewModel::limpiarFiltros
                 )
-            }
-        } else {
-            items(
-                items = uiState.recetas,
-                key = { receta -> receta.id }
-            ) { receta ->
-                ContentCard(
-                    title = receta.titulo,
-                    description = receta.descripcion,
-                    supportingText = receta.division.etiqueta,
-                    onClick = { onOpenDetail(receta.id) },
-                    modifier = Modifier.padding(horizontal = 24.dp)
-                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(
+                        items = uiState.recetas,
+                        key = { receta -> receta.id }
+                    ) { receta ->
+                        ContentCard(
+                            title = receta.titulo,
+                            description = receta.descripcion,
+                            supportingText = receta.division.etiqueta,
+                            onClick = { onOpenDetail(receta.id) },
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .animateItem()
+                        )
+                    }
+                }
             }
         }
     }
