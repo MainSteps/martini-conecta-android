@@ -274,6 +274,6 @@ private fun Double.formateada(): String {
     return if (this % 1.0 == 0.0) {
         toInt().toString()
     } else {
-        toString()
+        toString().replace('.', ',')
     }
 }

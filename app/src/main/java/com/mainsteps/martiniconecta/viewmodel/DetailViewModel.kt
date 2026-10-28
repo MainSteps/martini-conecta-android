@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class DetailViewModel(
+class DetailViewModel @JvmOverloads constructor(
     savedStateHandle: SavedStateHandle,
     obtenerContenido: (String) -> Contenido? = CatalogoRepository::obtenerPorId
 ) : ViewModel() {
