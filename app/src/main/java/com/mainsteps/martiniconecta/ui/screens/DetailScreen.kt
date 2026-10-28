@@ -12,14 +12,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -36,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mainsteps.martiniconecta.model.Ingrediente
 import com.mainsteps.martiniconecta.model.Contenido
+import com.mainsteps.martiniconecta.ui.components.DetailBotonFavorito
 import com.mainsteps.martiniconecta.ui.components.EmptyState
 import com.mainsteps.martiniconecta.viewmodel.DetailViewModel
 
@@ -153,30 +151,13 @@ fun DetailScreen(
         }
 
         item {
-            OutlinedButton(
+            DetailBotonFavorito(
+                isFavorite = isFavorite,
                 onClick = { onFavorite(receta) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 48.dp)
-                    .padding(horizontal = 24.dp)
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) {
-                        Icons.Default.Favorite
-                    } else {
-                        Icons.Default.FavoriteBorder
-                    },
-                    contentDescription = null
-                )
-                Text(
-                    text = if (isFavorite) {
-                        "Quitar de favoritos"
-                    } else {
-                        "Agregar a favoritos"
-                    },
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+                    .padding(horizontal = 24.dp),
+            )
         }
 
         item {
