@@ -5,6 +5,7 @@ import com.mainsteps.martiniconecta.model.Dificultad
 import com.mainsteps.martiniconecta.model.Division
 import com.mainsteps.martiniconecta.model.Ingrediente
 import com.mainsteps.martiniconecta.model.Interes
+import com.mainsteps.martiniconecta.model.ProductoInteres
 import com.mainsteps.martiniconecta.model.TamanoNegocio
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -43,6 +44,12 @@ class Converters {
 
     @TypeConverter
     fun stringToDificultad(value: String): Dificultad = enumValueOf(value)
+
+    @TypeConverter
+    fun productoToString(producto: ProductoInteres): String = producto.name
+
+    @TypeConverter
+    fun stringToProducto(value: String): ProductoInteres = enumValueOf(value)
 
     @TypeConverter
     fun listaToString(valores: List<String>): String =

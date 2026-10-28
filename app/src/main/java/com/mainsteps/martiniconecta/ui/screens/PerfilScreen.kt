@@ -43,6 +43,7 @@ import com.mainsteps.martiniconecta.viewmodel.ProfileViewModel
 @Composable
 fun PerfilScreen(
     profileViewModelFactory: ViewModelProvider.Factory,
+    onOpenContacto: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModelStoreOwner = LocalActivity.current as? ViewModelStoreOwner ?: return
@@ -164,6 +165,15 @@ fun PerfilScreen(
                 texto = "Completa los campos que faltan para guardar",
                 estilo = PerfilMensajeEstilo.Aviso
             )
+        }
+
+        OutlinedButton(
+            onClick = onOpenContacto,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp),
+        ) {
+            Text(text = "Quiero que me contacten")
         }
     }
 }
