@@ -37,9 +37,9 @@ import kotlinx.coroutines.delay
 fun InicioScreen(
     onOpenDetail: (String) -> Unit,
     inicioViewModelFactory: ViewModelProvider.Factory,
+    modifier: Modifier = Modifier,
     perfilGuardadoConfirmado: Boolean = false,
     onConfirmacionPerfilLeida: () -> Unit = {},
-    modifier: Modifier = Modifier,
     inicioViewModel: InicioViewModel = viewModel(factory = inicioViewModelFactory),
 ) {
     val uiState by inicioViewModel.uiState.collectAsStateWithLifecycle()
