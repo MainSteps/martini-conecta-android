@@ -7,7 +7,7 @@ import android.net.Uri
 import android.widget.Toast
 import com.mainsteps.martiniconecta.model.Contenido
 
-const val NUMERO_WHATSAPP_VENTAS = "56994623089"
+const val NUMERO_WHATSAPP_VENTAS = "56944570770"
 
 private const val SufijoCompartirReceta = "Receta de Martini Conecta · mastermartini.cl"
 
