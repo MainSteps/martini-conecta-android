@@ -1,6 +1,7 @@
 package com.mainsteps.martiniconecta.ui.screens
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.activity.compose.LocalActivity
@@ -96,7 +97,12 @@ fun PerfilScreen(
             val uri = FotoHelper.crearUri(context)
             fotoCamaraPendiente = uri.toString()
             mensajeCamara = null
-            camaraLauncher.launch(uri)
+            try {
+                camaraLauncher.launch(uri)
+            } catch (_: ActivityNotFoundException) {
+                fotoCamaraPendiente = null
+                mensajeCamara = "No encontramos una aplicación de cámara. Puedes elegir una foto de la galería."
+            }
         }
     }
 
