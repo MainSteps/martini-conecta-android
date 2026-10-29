@@ -34,3 +34,21 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         )
     }
 }
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS solicitudes_contacto (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                nombre TEXT NOT NULL,
+                telefono TEXT NOT NULL,
+                division TEXT NOT NULL,
+                comuna TEXT NOT NULL,
+                producto TEXT NOT NULL,
+                creadaEn INTEGER NOT NULL
+            )
+            """.trimIndent()
+        )
+    }
+}

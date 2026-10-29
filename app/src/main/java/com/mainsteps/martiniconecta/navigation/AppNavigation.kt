@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mainsteps.martiniconecta.ui.screens.DetailScreen
+import com.mainsteps.martiniconecta.ui.screens.ContactoScreen
 import com.mainsteps.martiniconecta.ui.components.DemoBanner
 import com.mainsteps.martiniconecta.ui.screens.ExploreScreen
 import com.mainsteps.martiniconecta.ui.screens.FavoritosScreen
@@ -36,6 +37,8 @@ fun AppNavigation(
     hasProfile: Boolean,
     profileViewModelFactory: ViewModelProvider.Factory,
     favoritosViewModelFactory: ViewModelProvider.Factory,
+    contactoViewModelFactory: ViewModelProvider.Factory,
+    inicioViewModelFactory: ViewModelProvider.Factory,
 ) {
     val navController = rememberNavController()
     val favoritosViewModel: FavoritosViewModel = viewModel(
@@ -106,10 +109,14 @@ fun AppNavigation(
                     .collectAsStateWithLifecycle()
 
                 InicioScreen(
+                    onOpenDetail = { itemId ->
+                        navController.navigate(Routes.Detalle.createRoute(itemId))
+                    },
+                    inicioViewModelFactory = inicioViewModelFactory,
                     perfilGuardadoConfirmado = perfilGuardadoConfirmado,
                     onConfirmacionPerfilLeida = {
                         backStackEntry.savedStateHandle[PERFIL_GUARDADO_CONFIRMADO] = false
-                    }
+                    },
                 )
             }
 
@@ -135,6 +142,16 @@ fun AppNavigation(
             composable(Routes.Perfil.route) {
                 PerfilScreen(
                     profileViewModelFactory = profileViewModelFactory,
+                    onOpenContacto = {
+                        navController.navigate(Routes.Contacto.route)
+                    },
+                )
+            }
+
+            composable(Routes.Contacto.route) {
+                ContactoScreen(
+                    contactoViewModelFactory = contactoViewModelFactory,
+                    onBack = { navController.popBackStack() },
                 )
             }
 
