@@ -5,6 +5,7 @@ import com.mainsteps.martiniconecta.model.CampoTexto
 import com.mainsteps.martiniconecta.model.ContactoUiState
 import com.mainsteps.martiniconecta.model.Division
 import com.mainsteps.martiniconecta.model.ProductoInteres
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -13,13 +14,40 @@ import org.junit.Test
 class ContactoValidatorTest {
 
     @Test
-    fun `telefono chileno con ocho digitos es valido`() {
-        assertNull(ContactoValidator.errorTelefono("+56 9 1234 5678"))
+    fun `telefono chileno es valido con o sin prefijo y separadores`() {
+        val telefonosValidos = listOf(
+            "+56994623089",
+            "56994623089",
+            "994623089",
+            "+56 9 9462 3089",
+            "+56 (9) 9462-3089",
+        )
+
+        telefonosValidos.forEach { telefono ->
+            assertNull(ContactoValidator.errorTelefono(telefono))
+        }
     }
 
     @Test
-    fun `telefono incompleto es invalido`() {
-        assertTrue(ContactoValidator.errorTelefono("+56 9 1234") != null)
+    fun `telefono de ocho digitos es invalido`() {
+        assertTrue(ContactoValidator.errorTelefono("94623089") != null)
+    }
+
+    @Test
+    fun `telefono se normaliza antes de guardar`() {
+        val telefonos = listOf(
+            "+56994623089",
+            "56994623089",
+            "994623089",
+            "+56 9 9462 3089",
+        )
+
+        telefonos.forEach { telefono ->
+            assertEquals(
+                "+56 9 9462 3089",
+                ContactoValidator.normalizarTelefono(telefono),
+            )
+        }
     }
 
     @Test
