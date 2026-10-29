@@ -231,12 +231,11 @@ class ProfileViewModel(
     }
 
     private fun PerfilUiState.toEntity(): PerfilEntity {
-        val telefonoLimpio = telefono.valor.trim()
         return PerfilEntity(
             id = PerfilEntity.PERFIL_ID,
             nombre = nombre.valor.trim(),
             email = correo.valor.trim(),
-            telefono = telefonoLimpio.takeIf { it.isNotEmpty() },
+            telefono = PerfilValidator.normalizarTelefono(telefono.valor),
             division = division.valor!!,
             tamano = tamano.valor!!,
             intereses = intereses.seleccionados,

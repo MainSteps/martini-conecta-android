@@ -27,11 +27,19 @@ object PerfilValidator {
         if (valor.isBlank()) {
             return null
         }
-        val sinEspacios = valor.replace(" ", "")
-        if (!Regex("^\\+569\\d{8}$").matches(sinEspacios)) {
-            return "Usa +56 9 y 8 dígitos, o déjalo vacío"
+        return if (ContactoValidator.errorTelefono(valor) == null) {
+            null
+        } else {
+            "Ingresa un telefono chileno de 9 dígitos, o déjalo vacío"
         }
-        return null
+    }
+
+    fun normalizarTelefono(valor: String): String? {
+        val limpio = valor.trim()
+        if (limpio.isEmpty()) {
+            return null
+        }
+        return ContactoValidator.normalizarTelefono(limpio)
     }
 
     fun errorDivision(division: Division?): String? {

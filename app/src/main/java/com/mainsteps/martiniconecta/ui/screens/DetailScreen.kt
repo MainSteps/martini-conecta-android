@@ -68,7 +68,7 @@ fun DetailScreen(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver a explorar"
+                        contentDescription = "Volver"
                     )
                 }
             }
@@ -109,7 +109,7 @@ fun DetailScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Volver a explorar"
+                    contentDescription = "Volver"
                 )
             }
         }

@@ -27,18 +27,13 @@ class ContactoViewModel(
     private val _uiState = MutableStateFlow(ContactoUiState())
     val uiState: StateFlow<ContactoUiState> = _uiState.asStateFlow()
 
+    private var estadoTrasLimpiar: ContactoUiState = ContactoUiState().conValidez()
+
     init {
         viewModelScope.launch {
-            val perfil = perfilRepository.obtenerPerfil().first()
-            if (perfil != null) {
-                _uiState.update { state ->
-                    state.copy(
-                        nombre = CampoTexto(valor = perfil.nombre),
-                        telefono = CampoTexto(valor = perfil.telefono ?: "+56 9 "),
-                        division = CampoSeleccion(valor = perfil.division),
-                    ).conValidez()
-                }
-            }
+            val inicial = construirEstadoInicial()
+            estadoTrasLimpiar = inicial
+            _uiState.value = inicial
         }
     }
 
@@ -81,8 +76,28 @@ class ContactoViewModel(
 
         _uiState.update { it.copy(enviando = true) }
         viewModelScope.launch {
-            contactoRepository.guardarSolicitud(validado.toModel())
-            _uiState.update { it.copy(enviando = false, enviadoExitoso = true) }
+            try {
+                contactoRepository.guardarSolicitud(validado.toModel())
+                _uiState.value = estadoTrasLimpiar.copy(
+                    enviadoExitoso = true,
+                    intentoEnvio = false,
+                )
+            } finally {
+                _uiState.update { it.copy(enviando = false) }
+            }
+        }
+    }
+
+    private suspend fun construirEstadoInicial(): ContactoUiState {
+        val perfil = perfilRepository.obtenerPerfil().first()
+        return if (perfil != null) {
+            ContactoUiState(
+                nombre = CampoTexto(valor = perfil.nombre),
+                telefono = CampoTexto(valor = perfil.telefono ?: "+56 9 "),
+                division = CampoSeleccion(valor = perfil.division),
+            ).conValidez()
+        } else {
+            ContactoUiState().conValidez()
         }
     }
 
