@@ -1,6 +1,7 @@
 package com.mainsteps.martiniconecta.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +13,15 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -27,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,6 +41,8 @@ import com.mainsteps.martiniconecta.model.Ingrediente
 import com.mainsteps.martiniconecta.model.Contenido
 import com.mainsteps.martiniconecta.ui.components.DetailBotonFavorito
 import com.mainsteps.martiniconecta.ui.components.EmptyState
+import com.mainsteps.martiniconecta.util.compartirReceta
+import com.mainsteps.martiniconecta.util.consultarVentas
 import com.mainsteps.martiniconecta.viewmodel.DetailViewModel
 
 @Composable
@@ -47,6 +55,7 @@ fun DetailScreen(
 ) {
     val uiState by detailViewModel.uiState.collectAsStateWithLifecycle()
     val receta = uiState.receta
+    val context = LocalContext.current
 
     if (receta == null) {
         LazyColumn(
@@ -158,6 +167,46 @@ fun DetailScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
             )
+        }
+
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { compartirReceta(context, receta) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = null,
+                    )
+                    Text(
+                        text = "Compartir",
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
+                Button(
+                    onClick = { consultarVentas(context, receta) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Phone,
+                        contentDescription = null,
+                    )
+                    Text(
+                        text = "Consultar a ventas",
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
+            }
         }
 
         item {
