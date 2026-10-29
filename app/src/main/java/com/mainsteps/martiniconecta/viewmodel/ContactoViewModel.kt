@@ -111,7 +111,7 @@ class ContactoViewModel(
     private fun ContactoUiState.toModel(): SolicitudContacto {
         return SolicitudContacto(
             nombre = nombre.valor.trim(),
-            telefono = telefono.valor.trim(),
+            telefono = ContactoValidator.normalizarTelefono(telefono.valor),
             division = requireNotNull(division.valor),
             comuna = comuna.valor.trim(),
             producto = requireNotNull(producto.valor),
