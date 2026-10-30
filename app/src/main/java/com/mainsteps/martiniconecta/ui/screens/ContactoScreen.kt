@@ -145,6 +145,15 @@ fun ContactoScreen(
             }
         }
 
+        uiState.mensajeError?.let { mensajeError ->
+            item {
+                PerfilMensajeValidacion(
+                    texto = mensajeError,
+                    estilo = PerfilMensajeEstilo.Error,
+                )
+            }
+        }
+
         item {
             Text(
                 text = "Prototipo académico: usa datos ficticios.",

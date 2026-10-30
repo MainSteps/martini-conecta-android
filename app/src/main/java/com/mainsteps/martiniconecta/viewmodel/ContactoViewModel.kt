@@ -27,18 +27,13 @@ class ContactoViewModel(
     private val _uiState = MutableStateFlow(ContactoUiState())
     val uiState: StateFlow<ContactoUiState> = _uiState.asStateFlow()
 
+    private var estadoTrasLimpiar: ContactoUiState = ContactoUiState().conValidez()
+
     init {
         viewModelScope.launch {
-            val perfil = perfilRepository.obtenerPerfil().first()
-            if (perfil != null) {
-                _uiState.update { state ->
-                    state.copy(
-                        nombre = CampoTexto(valor = perfil.nombre),
-                        telefono = CampoTexto(valor = perfil.telefono ?: "+56 9 "),
-                        division = CampoSeleccion(valor = perfil.division),
-                    ).conValidez()
-                }
-            }
+            val inicial = construirEstadoInicial()
+            estadoTrasLimpiar = inicial
+            _uiState.value = inicial
         }
     }
 
@@ -76,18 +71,50 @@ class ContactoViewModel(
 
     fun onEnviar() {
         val validado = _uiState.value.validadoCompleto()
-        _uiState.value = validado.copy(enviadoExitoso = false, intentoEnvio = true)
+        _uiState.value = validado.copy(
+            enviadoExitoso = false,
+            intentoEnvio = true,
+            mensajeError = null,
+        )
         if (!validado.esValido || validado.enviando) return
 
         _uiState.update { it.copy(enviando = true) }
         viewModelScope.launch {
-            contactoRepository.guardarSolicitud(validado.toModel())
-            _uiState.update { it.copy(enviando = false, enviadoExitoso = true) }
+            try {
+                contactoRepository.guardarSolicitud(validado.toModel())
+                _uiState.value = estadoTrasLimpiar.copy(
+                    enviadoExitoso = true,
+                    intentoEnvio = false,
+                    mensajeError = null,
+                )
+            } catch (e: Exception) {
+                _uiState.value = validado.copy(
+                    mensajeError = MENSAJE_ERROR_ENVIO,
+                    enviadoExitoso = false,
+                )
+            } finally {
+                _uiState.update { it.copy(enviando = false) }
+            }
+        }
+    }
+
+    private suspend fun construirEstadoInicial(): ContactoUiState {
+        val perfil = perfilRepository.obtenerPerfil().first()
+        return if (perfil != null) {
+            ContactoUiState(
+                nombre = CampoTexto(valor = perfil.nombre),
+                telefono = CampoTexto(valor = perfil.telefono ?: "+56 9 "),
+                division = CampoSeleccion(valor = perfil.division),
+            ).conValidez()
+        } else {
+            ContactoUiState().conValidez()
         }
     }
 
     private fun actualizarTexto(transformar: (ContactoUiState) -> ContactoUiState) {
-        _uiState.update { transformar(it).copy(enviadoExitoso = false).conValidez() }
+        _uiState.update {
+            transformar(it).copy(enviadoExitoso = false, mensajeError = null).conValidez()
+        }
     }
 
     private fun CampoTexto.actualizado(valor: String, validar: (String) -> String?): CampoTexto {
@@ -117,5 +144,9 @@ class ContactoViewModel(
             producto = requireNotNull(producto.valor),
             creadaEn = ahora(),
         )
+    }
+
+    private companion object {
+        const val MENSAJE_ERROR_ENVIO = "No pudimos enviar tu solicitud. Intenta de nuevo."
     }
 }

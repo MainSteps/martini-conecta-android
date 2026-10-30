@@ -10,4 +10,5 @@ data class ContactoUiState(
     val enviando: Boolean = false,
     val enviadoExitoso: Boolean = false,
     val intentoEnvio: Boolean = false,
+    val mensajeError: String? = null,
 )
