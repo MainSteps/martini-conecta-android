@@ -71,7 +71,11 @@ class ContactoViewModel(
 
     fun onEnviar() {
         val validado = _uiState.value.validadoCompleto()
-        _uiState.value = validado.copy(enviadoExitoso = false, intentoEnvio = true)
+        _uiState.value = validado.copy(
+            enviadoExitoso = false,
+            intentoEnvio = true,
+            mensajeError = null,
+        )
         if (!validado.esValido || validado.enviando) return
 
         _uiState.update { it.copy(enviando = true) }
@@ -81,6 +85,12 @@ class ContactoViewModel(
                 _uiState.value = estadoTrasLimpiar.copy(
                     enviadoExitoso = true,
                     intentoEnvio = false,
+                    mensajeError = null,
+                )
+            } catch (e: Exception) {
+                _uiState.value = validado.copy(
+                    mensajeError = MENSAJE_ERROR_ENVIO,
+                    enviadoExitoso = false,
                 )
             } finally {
                 _uiState.update { it.copy(enviando = false) }
@@ -102,7 +112,9 @@ class ContactoViewModel(
     }
 
     private fun actualizarTexto(transformar: (ContactoUiState) -> ContactoUiState) {
-        _uiState.update { transformar(it).copy(enviadoExitoso = false).conValidez() }
+        _uiState.update {
+            transformar(it).copy(enviadoExitoso = false, mensajeError = null).conValidez()
+        }
     }
 
     private fun CampoTexto.actualizado(valor: String, validar: (String) -> String?): CampoTexto {
@@ -132,5 +144,9 @@ class ContactoViewModel(
             producto = requireNotNull(producto.valor),
             creadaEn = ahora(),
         )
+    }
+
+    private companion object {
+        const val MENSAJE_ERROR_ENVIO = "No pudimos enviar tu solicitud. Intenta de nuevo."
     }
 }
