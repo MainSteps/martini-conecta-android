@@ -6,20 +6,71 @@ Prototipo móvil académico desarrollado para el caso Master Martini en **DSY110
 
 App de contenidos técnicos para clientes y emprendedores de panadería, pastelería, heladería y gastronomía de Master Martini Chile (filial de Unigrà). Lleva del contenido al producto Martini y del producto a una conversación con ventas por WhatsApp. Diseñada para usuarios mayores de 50, con bajo manejo digital o dificultades visuales: simple, accesible y disponible sin conexión.
 
-## Alcance del MVP
+## Funcionalidades implementadas
 
 - Perfil local con división, tamaño de negocio, intereses y teléfono opcional.
-- Catálogo de recetas por división con productos Martini, rinde e ingredientes.
-- Exploración con un filtro y búsqueda simple; detalle de receta.
-- Favoritos que se ven sin internet.
-- Formulario «Quiero que me contacten».
-- Foto de perfil desde galería o cámara.
-- Inicio por división, consultar a ventas por WhatsApp y escalar receta (diferenciadores).
-- Accesibilidad: respeta la letra del sistema, alto contraste, botones grandes, TalkBack.
+- Persistencia del perfil, preferencias, favoritos y solicitudes mediante Room.
+- Catálogo local de 12 recetas, organizado por división y disponible sin conexión.
+- Inicio personalizado según la división guardada en el perfil.
+- Exploración por título y división, con detalle completo de cada receta.
+- Favoritos sin duplicados que sobreviven al reinicio de la aplicación.
+- Escalado de ingredientes a ×½, ×1 y ×2.
+- Formulario validado «Quiero que me contacten», con datos precargados desde el perfil.
+- Foto de perfil desde galería o cámara mediante Activity Result APIs y FileProvider.
+- Acciones para compartir una receta y consultar a ventas mediante intents.
+- Accesibilidad: tipografía escalable, preferencia de letra grande, contraste, áreas táctiles amplias y semántica para TalkBack.
 
-## Tecnologías previstas
+## Tecnologías
 
-Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, StateFlow, Room, Activity Result APIs.
+- Kotlin y Jetpack Compose con Material 3.
+- Navigation Compose.
+- ViewModel, StateFlow y corrutinas.
+- Room con migraciones para persistencia local.
+- Activity Result APIs, Photo Picker, cámara y FileProvider.
+- Coil para mostrar la foto de perfil.
+- JUnit y kotlinx-coroutines-test para pruebas unitarias.
+
+## Requisitos
+
+- Android Studio con JDK 17.
+- Android SDK Platform 37 y Build Tools 36.0.0.
+- Dispositivo o emulador con Android 7.0 (API 24) o superior.
+
+El proyecto incluye Gradle Wrapper 9.6.0, por lo que no requiere una instalación global de Gradle.
+
+## Ejecución
+
+1. Clona el repositorio y ábrelo en Android Studio.
+2. Espera la sincronización de Gradle.
+3. Selecciona un dispositivo o emulador con API 24 o superior.
+4. Ejecuta la configuración `app`.
+
+También puedes verificar el proyecto desde una terminal en la raíz:
+
+```powershell
+.\gradlew.bat assembleDebug testDebugUnitTest lintDebug
+```
+
+En macOS o Linux:
+
+```bash
+./gradlew assembleDebug testDebugUnitTest lintDebug
+```
+
+La APK de depuración se genera en `app/build/outputs/apk/debug/app-debug.apk`.
+
+## Verificación final
+
+Antes del congelamiento se comprueba:
+
+- onboarding → Inicio → Explorar → Detalle → Favoritos;
+- persistencia del perfil y de favoritos después de reiniciar;
+- edición del perfil, galería, cámara y formulario de contacto;
+- compartir y consultar a ventas mediante intents;
+- fuente del sistema al máximo y lectura de acciones con TalkBack;
+- `assembleDebug`, `testDebugUnitTest`, `lintDebug` y `git diff --check`.
+
+Los datos ingresados durante las pruebas deben ser ficticios.
 
 ## Equipo
 
