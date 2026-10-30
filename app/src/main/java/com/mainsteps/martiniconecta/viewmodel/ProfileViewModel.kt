@@ -12,9 +12,11 @@ import com.mainsteps.martiniconecta.model.PerfilUiState
 import com.mainsteps.martiniconecta.model.TamanoNegocio
 import com.mainsteps.martiniconecta.repository.PerfilRepository
 import com.mainsteps.martiniconecta.viewmodel.validation.PerfilValidator
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,15 +35,23 @@ class ProfileViewModel(
 
     init {
         viewModelScope.launch {
-            perfilRepository.obtenerPerfil().collect { entity ->
-                _hasProfile.value = entity != null
-                if (!formularioHidratado) {
-                    formularioHidratado = true
-                    if (entity != null) {
-                        _uiState.value = entity.toUiState()
+            perfilRepository.obtenerPerfil()
+                .catch { error ->
+                    if (error is CancellationException) throw error
+                    _hasProfile.value = false
+                    _uiState.update { state ->
+                        state.copy(mensajeError = MENSAJE_ERROR_LECTURA)
                     }
                 }
-            }
+                .collect { entity ->
+                    _hasProfile.value = entity != null
+                    if (!formularioHidratado) {
+                        formularioHidratado = true
+                        if (entity != null) {
+                            _uiState.value = entity.toUiState()
+                        }
+                    }
+                }
         }
     }
 
@@ -133,16 +143,39 @@ class ProfileViewModel(
     }
 
     fun onFotoSeleccionada(uri: String) {
-        _uiState.update { it.copy(fotoUri = uri, guardadoExitoso = false) }
+        val fotoAnterior = _uiState.value.fotoUri
+        _uiState.update {
+            it.copy(fotoUri = uri, guardadoExitoso = false, mensajeError = null)
+        }
         viewModelScope.launch {
-            perfilRepository.guardarFotoUri(uri)
+            try {
+                perfilRepository.guardarFotoUri(uri)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(fotoUri = fotoAnterior, mensajeError = MENSAJE_ERROR_FOTO)
+                }
+            }
         }
     }
 
     fun onLetraGrandeCambiada(activada: Boolean) {
-        _uiState.update { it.copy(letraGrande = activada) }
+        val valorAnterior = _uiState.value.letraGrande
+        _uiState.update { it.copy(letraGrande = activada, mensajeError = null) }
         viewModelScope.launch {
-            persistirPerfilActual()
+            try {
+                persistirPerfilActual()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(
+                        letraGrande = valorAnterior,
+                        mensajeError = MENSAJE_ERROR_PREFERENCIA,
+                    )
+                }
+            }
         }
     }
 
@@ -178,13 +211,28 @@ class ProfileViewModel(
             return
         }
         viewModelScope.launch {
-            perfilRepository.guardarPerfil(estadoValidado.toEntity())
-            _uiState.update { it.copy(guardadoExitoso = true).conEsValido() }
+            try {
+                perfilRepository.guardarPerfil(estadoValidado.toEntity())
+                _uiState.update {
+                    it.copy(guardadoExitoso = true, mensajeError = null).conEsValido()
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(
+                        guardadoExitoso = false,
+                        mensajeError = MENSAJE_ERROR_GUARDADO,
+                    ).conEsValido()
+                }
+            }
         }
     }
 
     private fun actualizarTexto(transform: (PerfilUiState) -> PerfilUiState) {
-        _uiState.update { transform(it).copy(guardadoExitoso = false).conEsValido() }
+        _uiState.update {
+            transform(it).copy(guardadoExitoso = false, mensajeError = null).conEsValido()
+        }
     }
 
     private fun CampoTexto.actualizado(
@@ -242,5 +290,12 @@ class ProfileViewModel(
             fotoUri = fotoUri,
             letraGrande = letraGrande,
         )
+    }
+
+    private companion object {
+        const val MENSAJE_ERROR_LECTURA = "No pudimos cargar tu perfil. Intenta reiniciar la app."
+        const val MENSAJE_ERROR_GUARDADO = "No pudimos guardar tu perfil. Intenta de nuevo."
+        const val MENSAJE_ERROR_FOTO = "No pudimos guardar la foto. Intenta de nuevo."
+        const val MENSAJE_ERROR_PREFERENCIA = "No pudimos guardar la preferencia de letra."
     }
 }

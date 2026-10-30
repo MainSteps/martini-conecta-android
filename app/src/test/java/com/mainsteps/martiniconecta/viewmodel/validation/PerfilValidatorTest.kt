@@ -8,6 +8,17 @@ import org.junit.Test
 class PerfilValidatorTest {
 
     @Test
+    fun `correo valido acepta formato habitual`() {
+        assertNull(PerfilValidator.errorCorreo("ana.perez+ventas@example.cl"))
+    }
+
+    @Test
+    fun `correo invalido muestra error`() {
+        assertEquals("Correo no válido", PerfilValidator.errorCorreo("ana@"))
+        assertEquals("Correo no válido", PerfilValidator.errorCorreo("ana@example"))
+    }
+
+    @Test
     fun `telefono vacio es valido`() {
         assertNull(PerfilValidator.errorTelefono(""))
         assertNull(PerfilValidator.errorTelefono("   "))

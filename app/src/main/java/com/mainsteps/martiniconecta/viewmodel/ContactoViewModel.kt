@@ -11,6 +11,7 @@ import com.mainsteps.martiniconecta.model.SolicitudContacto
 import com.mainsteps.martiniconecta.repository.ContactoRepository
 import com.mainsteps.martiniconecta.repository.PerfilRepository
 import com.mainsteps.martiniconecta.viewmodel.validation.ContactoValidator
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,9 +32,17 @@ class ContactoViewModel(
 
     init {
         viewModelScope.launch {
-            val inicial = construirEstadoInicial()
-            estadoTrasLimpiar = inicial
-            _uiState.value = inicial
+            try {
+                val inicial = construirEstadoInicial()
+                estadoTrasLimpiar = inicial
+                _uiState.value = inicial
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(mensajeError = MENSAJE_ERROR_CARGA_PERFIL)
+                }
+            }
         }
     }
 
@@ -87,7 +96,9 @@ class ContactoViewModel(
                     intentoEnvio = false,
                     mensajeError = null,
                 )
-            } catch (e: Exception) {
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
                 _uiState.value = validado.copy(
                     mensajeError = MENSAJE_ERROR_ENVIO,
                     enviadoExitoso = false,
@@ -148,5 +159,7 @@ class ContactoViewModel(
 
     private companion object {
         const val MENSAJE_ERROR_ENVIO = "No pudimos enviar tu solicitud. Intenta de nuevo."
+        const val MENSAJE_ERROR_CARGA_PERFIL =
+            "No pudimos precargar tu perfil. Puedes completar los datos manualmente."
     }
 }

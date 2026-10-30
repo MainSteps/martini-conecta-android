@@ -90,5 +90,12 @@ fun OnboardingScreen(
                 estilo = PerfilMensajeEstilo.Aviso
             )
         }
+
+        uiState.mensajeError?.let { mensaje ->
+            PerfilMensajeValidacion(
+                texto = mensaje,
+                estilo = PerfilMensajeEstilo.Error,
+            )
+        }
     }
 }

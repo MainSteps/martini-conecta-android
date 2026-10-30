@@ -4,6 +4,7 @@ import com.mainsteps.martiniconecta.model.Contenido
 
 data class FavoritosUiState(
     val favoritos: List<Contenido> = emptyList(),
+    val mensajeError: String? = null,
 ) {
     val idsFavoritos: Set<String>
         get() = favoritos.mapTo(mutableSetOf(), Contenido::id)

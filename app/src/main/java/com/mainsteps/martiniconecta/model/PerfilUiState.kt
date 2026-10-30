@@ -26,4 +26,5 @@ data class PerfilUiState(
     val esValido: Boolean = false,
     val guardadoExitoso: Boolean = false,
     val letraGrande: Boolean = false,
+    val mensajeError: String? = null,
 )

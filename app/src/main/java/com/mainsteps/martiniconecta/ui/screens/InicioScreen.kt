@@ -85,6 +85,14 @@ fun InicioScreen(
                 )
             }
 
+            InicioUiState.Error -> {
+                EmptyState(
+                    title = "No pudimos cargar el inicio",
+                    message = "Cierra y vuelve a abrir la aplicación para intentarlo nuevamente.",
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                )
+            }
+
             is InicioUiState.ConRecetas -> {
                 InicioConRecetas(
                     nombre = estado.nombre,

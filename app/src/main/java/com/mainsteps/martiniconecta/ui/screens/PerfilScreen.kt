@@ -233,6 +233,13 @@ fun PerfilScreen(
             )
         }
 
+        uiState.mensajeError?.let { mensaje ->
+            PerfilMensajeValidacion(
+                texto = mensaje,
+                estilo = PerfilMensajeEstilo.Error,
+            )
+        }
+
         if (!uiState.esValido) {
             PerfilMensajeValidacion(
                 texto = "Completa los campos que faltan para guardar",
