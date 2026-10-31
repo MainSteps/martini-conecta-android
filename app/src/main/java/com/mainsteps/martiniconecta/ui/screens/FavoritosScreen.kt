@@ -12,14 +12,11 @@ import androidx.compose.ui.unit.dp
 import com.mainsteps.martiniconecta.model.Contenido
 import com.mainsteps.martiniconecta.ui.components.ContentCard
 import com.mainsteps.martiniconecta.ui.components.EmptyState
-import com.mainsteps.martiniconecta.ui.components.PerfilMensajeEstilo
-import com.mainsteps.martiniconecta.ui.components.PerfilMensajeValidacion
 import com.mainsteps.martiniconecta.ui.components.ScreenHeader
 
 @Composable
 fun FavoritosScreen(
     favoritos: List<Contenido>,
-    mensajeError: String?,
     onOpenDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -34,16 +31,6 @@ fun FavoritosScreen(
                 subtitle = "Tus recetas guardadas están disponibles incluso sin conexión.",
                 modifier = Modifier.padding(horizontal = 24.dp),
             )
-        }
-
-        if (mensajeError != null) {
-            item {
-                PerfilMensajeValidacion(
-                    texto = mensajeError,
-                    estilo = PerfilMensajeEstilo.Error,
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                )
-            }
         }
 
         if (favoritos.isEmpty()) {

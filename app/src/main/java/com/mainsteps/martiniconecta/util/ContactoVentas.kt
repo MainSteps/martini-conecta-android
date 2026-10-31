@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.core.net.toUri
 import com.mainsteps.martiniconecta.model.Contenido
 
 const val NUMERO_WHATSAPP_VENTAS = "56944570770"
@@ -29,7 +28,9 @@ fun intentCompartirReceta(contenido: Contenido): Intent {
 
 fun intentConsultarVentas(contenido: Contenido): Intent {
     val mensaje = mensajeWhatsAppVentas(contenido)
-    val uri = "https://wa.me/$NUMERO_WHATSAPP_VENTAS?text=${Uri.encode(mensaje)}".toUri()
+    val uri = Uri.parse(
+        "https://wa.me/$NUMERO_WHATSAPP_VENTAS?text=${Uri.encode(mensaje)}",
+    )
     return Intent(Intent.ACTION_VIEW, uri)
 }
 

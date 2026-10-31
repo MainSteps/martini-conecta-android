@@ -7,11 +7,9 @@ import com.mainsteps.martiniconecta.model.Contenido
 import com.mainsteps.martiniconecta.model.Division
 import com.mainsteps.martiniconecta.repository.CatalogoRepository
 import com.mainsteps.martiniconecta.repository.PerfilRepository
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -20,8 +18,6 @@ sealed interface InicioUiState {
     data object Cargando : InicioUiState
 
     data object SinPerfil : InicioUiState
-
-    data object Error : InicioUiState
 
     data class ConRecetas(
         val nombre: String,
@@ -50,14 +46,9 @@ class InicioViewModel @JvmOverloads constructor(
                 flowOf(obtenerCatalogo()),
             ) { perfil, catalogo ->
                 mapearEstado(perfil, catalogo)
+            }.collect { estado ->
+                _uiState.value = estado
             }
-                .catch { error ->
-                    if (error is CancellationException) throw error
-                    emit(InicioUiState.Error)
-                }
-                .collect { estado ->
-                    _uiState.value = estado
-                }
         }
     }
 

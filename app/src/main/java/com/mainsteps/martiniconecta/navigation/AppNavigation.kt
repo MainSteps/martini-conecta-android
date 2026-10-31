@@ -133,7 +133,6 @@ fun AppNavigation(
             composable(Routes.Favoritos.route) {
                 FavoritosScreen(
                     favoritos = favoritosUiState.favoritos,
-                    mensajeError = favoritosUiState.mensajeError,
                     onOpenDetail = { itemId ->
                         navController.navigate(Routes.Detalle.createRoute(itemId))
                     },
