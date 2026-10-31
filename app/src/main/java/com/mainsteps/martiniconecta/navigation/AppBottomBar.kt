@@ -11,6 +11,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 
 private data class BottomDestination(
     val route: String,
@@ -44,7 +45,11 @@ fun AppBottomBar(
                     )
                 },
                 label = {
-                    Text(text = destination.label)
+                    Text(
+                        text = destination.label,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             )
         }
