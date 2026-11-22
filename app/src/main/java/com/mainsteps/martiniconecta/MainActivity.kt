@@ -24,6 +24,7 @@ import com.mainsteps.martiniconecta.viewmodel.ProfileViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.ContactoViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.InicioViewModelFactory
+import com.mainsteps.martiniconecta.viewmodel.MisSolicitudesViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -50,6 +51,10 @@ class MainActivity : ComponentActivity() {
             contactoRepository,
             perfilRepository,
         )
+    }
+
+    private val misSolicitudesViewModelFactory by lazy {
+        MisSolicitudesViewModelFactory(contactoRepository, perfilRepository)
     }
 
     private val inicioViewModelFactory by lazy {
@@ -85,6 +90,7 @@ class MainActivity : ComponentActivity() {
                             profileViewModelFactory = profileViewModelFactory,
                             favoritosViewModelFactory = favoritosViewModelFactory,
                             contactoViewModelFactory = contactoViewModelFactory,
+                            misSolicitudesViewModelFactory = misSolicitudesViewModelFactory,
                             inicioViewModelFactory = inicioViewModelFactory,
                         )
                     }

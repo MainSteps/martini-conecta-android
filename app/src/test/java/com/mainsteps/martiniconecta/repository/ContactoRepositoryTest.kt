@@ -40,8 +40,8 @@ class ContactoRepositoryTest {
 }
 
 class SolicitudApiFalsa(
-    private var fallarAlCrear: Boolean = false,
-    private var fallarAlListar: Boolean = false,
+    var fallarAlCrear: Boolean = false,
+    var fallarAlListar: Boolean = false,
 ) : SolicitudApi {
 
     private val solicitudes = mutableListOf<SolicitudContacto>()

@@ -7,6 +7,7 @@ sealed class Routes(val route: String) {
     object Favoritos : Routes("favoritos")
     object Perfil : Routes("perfil")
     object Contacto : Routes("contacto")
+    object MisSolicitudes : Routes("mis_solicitudes")
 
     object Detalle : Routes("detalle/{itemId}") {
 
