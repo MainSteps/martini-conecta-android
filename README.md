@@ -91,3 +91,51 @@ Detalle en [CONTRIBUTING.md](CONTRIBUTING.md) y contexto completo en [docs/conte
 ## Contexto
 
 Este repositorio corresponde a un prototipo académico basado en un desafío empresarial real. No implica que Master Martini haya contratado, aprobado o utilizado la aplicación. Marca, productos y WhatsApp se usan en modo demo con el aviso "Prototipo académico, no oficial".
+
+## Microservicio `martini-api`
+
+La app consume el microservicio Spring Boot del equipo: [MainSteps/martini-api](https://github.com/MainSteps/martini-api). Para desarrollo, inicia la API con JDK 17 o superior:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+En el emulador Android, la app usa `http://10.0.2.2:8080/` para llegar al puerto `8080` del equipo. Con un emulador conectado por ADB, también se puede reenviar el puerto con:
+
+```powershell
+adb reverse tcp:8080 tcp:8080
+```
+
+| Método | Ruta | Uso |
+| --- | --- | --- |
+| `GET` | `/api/solicitudes` | Listar solicitudes |
+| `POST` | `/api/solicitudes` | Crear una solicitud |
+| `GET` | `/api/solicitudes/{id}` | Obtener una solicitud |
+| `PUT` | `/api/solicitudes/{id}` | Actualizar una solicitud |
+| `DELETE` | `/api/solicitudes/{id}` | Eliminar una solicitud |
+
+Ejemplo de respuesta:
+
+```json
+{
+  "id": 4,
+  "nombre": "Ana Soto",
+  "telefono": "+56 9 8765 4321",
+  "division": "PANADERIA_PASTELERIA",
+  "comuna": "Ñuñoa",
+  "producto": "MANTECA_UNIGRAL",
+  "creadaEn": 1795058223282,
+  "estado": "PENDIENTE"
+}
+```
+
+## Tests y cobertura
+
+Ejecuta las pruebas unitarias y genera el reporte HTML de Kover:
+
+```powershell
+.\gradlew.bat testDebugUnitTest
+.\gradlew.bat koverHtmlReportDebug
+```
+
+El reporte de cobertura se genera bajo `app/build/reports/kover/htmlDebug/`. Kover excluye pantallas y componentes Compose, tema, navegación, `MainActivity`, la configuración de Room y las factories de ViewModel para medir solo lógica de la aplicación. La verificación de cobertura exige al menos **80%**. Guarda una captura del reporte en `docs/evidencias/` para la entrega.
