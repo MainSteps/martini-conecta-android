@@ -100,6 +100,7 @@ class MisSolicitudesViewModelTest {
         advanceUntilIdle()
 
         val estado = viewModel.uiState.value as MisSolicitudesUiState.Exito
+        assertEquals("+56 9 1234 5678", api.ultimoTelefonoListado)
         assertEquals(1, estado.solicitudes.size)
         assertEquals("+56 9 1234 5678", estado.solicitudes.single().telefono)
     }

@@ -11,7 +11,7 @@ class ContactoRepository(
         return api.crear(solicitud).id
     }
 
-    suspend fun listarSolicitudes(): List<SolicitudContacto> {
-        return api.listar()
+    suspend fun listarSolicitudes(telefono: String? = null): List<SolicitudContacto> {
+        return api.listar(telefono)
     }
 }

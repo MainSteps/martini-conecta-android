@@ -40,8 +40,7 @@ class MisSolicitudesViewModel(
             }
             val telefonoNormalizado = ContactoValidator.normalizarTelefono(telefonoPerfil)
             try {
-                val solicitudes = contactoRepository.listarSolicitudes()
-                    .filter { solicitud -> solicitud.telefono == telefonoNormalizado }
+                val solicitudes = contactoRepository.listarSolicitudes(telefonoNormalizado)
                 _uiState.value = if (solicitudes.isEmpty()) {
                     MisSolicitudesUiState.Vacio
                 } else {

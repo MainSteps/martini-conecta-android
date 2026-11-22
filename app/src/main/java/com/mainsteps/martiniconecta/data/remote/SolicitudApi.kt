@@ -8,11 +8,12 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface SolicitudApi {
 
     @GET("api/solicitudes")
-    suspend fun listar(): List<SolicitudContacto>
+    suspend fun listar(@Query("telefono") telefono: String? = null): List<SolicitudContacto>
 
     @GET("api/solicitudes/{id}")
     suspend fun obtener(@Path("id") id: Long): SolicitudContacto

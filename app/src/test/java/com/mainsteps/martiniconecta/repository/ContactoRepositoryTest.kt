@@ -16,19 +16,10 @@ class ContactoRepositoryTest {
     fun `guardar solicitud conserva todos los datos`() = runBlocking {
         val api = SolicitudApiFalsa()
         val repository = ContactoRepository(api)
-        val solicitud = SolicitudContacto(
-            nombre = "Ana Pérez",
-            telefono = "+56 9 1234 5678",
-            division = Division.GELATERIA,
-            comuna = "Maipú",
-            producto = ProductoInteres.CHOCOLATE_ARIBA,
-            creadaEn = 1000,
-        )
-
-        val id = repository.guardarSolicitud(solicitud)
+        val id = repository.guardarSolicitud(solicitudEjemplo)
 
         assertEquals(1, id)
-        assertEquals(solicitud.copy(id = 1), repository.listarSolicitudes().single())
+        assertEquals(solicitudEjemplo.copy(id = 1), repository.listarSolicitudes().single())
     }
 
     @Test
@@ -37,6 +28,34 @@ class ContactoRepositoryTest {
 
         assertTrue(repository.listarSolicitudes().isEmpty())
     }
+
+    @Test
+    fun `listar solicitudes envia telefono a la api`() = runBlocking {
+        val api = SolicitudApiFalsa()
+        val repository = ContactoRepository(api)
+        api.crear(solicitudEjemplo)
+        api.crear(
+            solicitudEjemplo.copy(
+                nombre = "Otra",
+                telefono = "+56 9 9999 8888",
+            ),
+        )
+
+        val resultado = repository.listarSolicitudes("+56 9 1234 5678")
+
+        assertEquals("+56 9 1234 5678", api.ultimoTelefonoListado)
+        assertEquals(1, resultado.size)
+        assertEquals("+56 9 1234 5678", resultado.single().telefono)
+    }
+
+    private val solicitudEjemplo = SolicitudContacto(
+        nombre = "Ana Pérez",
+        telefono = "+56 9 1234 5678",
+        division = Division.GELATERIA,
+        comuna = "Maipú",
+        producto = ProductoInteres.CHOCOLATE_ARIBA,
+        creadaEn = 1000,
+    )
 }
 
 class SolicitudApiFalsa(
@@ -46,11 +65,19 @@ class SolicitudApiFalsa(
 
     private val solicitudes = mutableListOf<SolicitudContacto>()
 
-    override suspend fun listar(): List<SolicitudContacto> {
+    var ultimoTelefonoListado: String? = null
+
+    override suspend fun listar(telefono: String?): List<SolicitudContacto> {
         if (fallarAlListar) {
             throw RuntimeException("API")
         }
-        return solicitudes.toList()
+        ultimoTelefonoListado = telefono
+        val lista = solicitudes.toList()
+        return if (telefono.isNullOrBlank()) {
+            lista
+        } else {
+            lista.filter { solicitud -> solicitud.telefono == telefono }
+        }
     }
 
     override suspend fun obtener(id: Long): SolicitudContacto {
