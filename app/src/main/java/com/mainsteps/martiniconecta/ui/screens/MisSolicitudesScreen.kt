@@ -17,9 +17,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.TextButton
+import com.mainsteps.martiniconecta.model.ProductoInteres
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -46,6 +63,31 @@ fun MisSolicitudesScreen(
 
     LaunchedEffect(Unit) {
         viewModel.cargar()
+    }
+
+    val contenido = uiState as? MisSolicitudesUiState.Exito
+    contenido?.edicion?.let { solicitud ->
+        EdicionSolicitudDialog(contenido, solicitud, viewModel)
+    }
+    contenido?.paraEliminar?.let { solicitud ->
+        AlertDialog(
+            onDismissRequest = viewModel::onCancelar,
+            title = { Text("¿Eliminar esta solicitud?") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Se eliminará la solicitud de ${solicitud.nombre} para ${solicitud.producto.etiqueta}.")
+                    contenido.mensaje?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.onEliminar(solicitud.id) }, enabled = !contenido.procesando) {
+                    Text(if (contenido.procesando) "Eliminando…" else "Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::onCancelar, enabled = !contenido.procesando) { Text("Cancelar") }
+            },
+        )
     }
 
     LazyColumn(
@@ -109,11 +151,19 @@ fun MisSolicitudesScreen(
             }
 
             is MisSolicitudesUiState.Exito -> {
+                if (estado.mensaje != null && estado.edicion == null && estado.paraEliminar == null) {
+                    item { Text(estado.mensaje, style = MaterialTheme.typography.bodyLarge) }
+                }
                 items(
                     items = estado.solicitudes,
                     key = { solicitud -> solicitud.id },
                 ) { solicitud ->
-                    SolicitudTarjeta(solicitud = solicitud)
+                    SolicitudTarjeta(
+                        solicitud = solicitud,
+                        enabled = !estado.procesando,
+                        onEditar = { viewModel.onEditar(solicitud) },
+                        onEliminar = { viewModel.onConfirmarEliminar(solicitud) },
+                    )
                 }
             }
         }
@@ -123,6 +173,9 @@ fun MisSolicitudesScreen(
 @Composable
 private fun SolicitudTarjeta(
     solicitud: SolicitudContacto,
+    enabled: Boolean,
+    onEditar: () -> Unit,
+    onEliminar: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -157,8 +210,86 @@ private fun SolicitudTarjeta(
                 text = etiquetaEstado(solicitud.estado),
                 style = MaterialTheme.typography.bodyLarge,
             )
+            OutlinedButton(onClick = onEditar, enabled = enabled, modifier = Modifier.heightIn(min = 48.dp)) {
+                Icon(Icons.Default.Edit, contentDescription = "Editar solicitud de ${solicitud.nombre}")
+                Text("Editar", modifier = Modifier.padding(start = 8.dp))
+            }
+            OutlinedButton(onClick = onEliminar, enabled = enabled, modifier = Modifier.heightIn(min = 48.dp)) {
+                Icon(Icons.Default.Delete, contentDescription = "Eliminar solicitud de ${solicitud.nombre}")
+                Text("Eliminar", modifier = Modifier.padding(start = 8.dp))
+            }
         }
     }
+}
+
+@Composable
+private fun EdicionSolicitudDialog(
+    estado: MisSolicitudesUiState.Exito,
+    solicitud: SolicitudContacto,
+    viewModel: MisSolicitudesViewModel,
+) {
+    var productosAbiertos by remember { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = viewModel::onCancelar,
+        title = { Text("Editar solicitud") },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedTextField(
+                    value = solicitud.comuna,
+                    onValueChange = { viewModel.onCambiarEdicion(solicitud.copy(comuna = it)) },
+                    label = { Text("Comuna") },
+                    enabled = !estado.procesando,
+                    isError = estado.errorComuna != null,
+                    supportingText = { estado.errorComuna?.let { Text("⚠ $it") } },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Text("Producto de interés", style = MaterialTheme.typography.bodyLarge)
+                Box {
+                    OutlinedButton(
+                        onClick = { productosAbiertos = true },
+                        enabled = !estado.procesando,
+                        modifier = Modifier.heightIn(min = 48.dp),
+                    ) { Text(solicitud.producto.etiqueta) }
+                    DropdownMenu(expanded = productosAbiertos, onDismissRequest = { productosAbiertos = false }) {
+                        ProductoInteres.entries.forEach { producto ->
+                            DropdownMenuItem(
+                                text = { Text(producto.etiqueta, style = MaterialTheme.typography.bodyLarge) },
+                                onClick = {
+                                    viewModel.onCambiarEdicion(solicitud.copy(producto = producto))
+                                    productosAbiertos = false
+                                },
+                            )
+                        }
+                    }
+                }
+                Text(etiquetaEstado(solicitud.estado), style = MaterialTheme.typography.bodyLarge)
+                Switch(
+                    checked = solicitud.estado == EstadoSolicitud.CONTACTADO,
+                    onCheckedChange = { contactado ->
+                        viewModel.onCambiarEdicion(solicitud.copy(
+                            estado = if (contactado) EstadoSolicitud.CONTACTADO else EstadoSolicitud.PENDIENTE,
+                        ))
+                    },
+                    enabled = !estado.procesando,
+                    modifier = Modifier.semantics {
+                        contentDescription = "Marcar como contactado"
+                    },
+                )
+                estado.mensaje?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = viewModel::onGuardarEdicion, enabled = !estado.procesando) {
+                Text(if (estado.procesando) "Guardando…" else "Guardar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = viewModel::onCancelar, enabled = !estado.procesando) { Text("Cancelar") }
+        },
+    )
 }
 
 private fun formatearFecha(millis: Long): String {
