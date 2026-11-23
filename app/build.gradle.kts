@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -35,6 +36,34 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+// Only application logic counts toward the 80% target. Compose UI, navigation,
+// Android entry points, Room infrastructure and ViewModel factories are excluded.
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "com.mainsteps.martiniconecta.ui.screens.*",
+                    "com.mainsteps.martiniconecta.ui.components.*",
+                    "com.mainsteps.martiniconecta.ui.theme.*",
+                    "com.mainsteps.martiniconecta.MainActivity",
+                    "com.mainsteps.martiniconecta.navigation.*",
+                    "com.mainsteps.martiniconecta.data.local.AppDatabase*",
+                    "com.mainsteps.martiniconecta.data.local.*_Impl*",
+                    "com.mainsteps.martiniconecta.data.local.*Dao_Impl*",
+                    "com.mainsteps.martiniconecta.util.ContactoVentasKt",
+                    "com.mainsteps.martiniconecta.viewmodel.*Factory",
+                )
+            }
+        }
+        verify {
+            rule {
+                minBound(80)
+            }
+        }
     }
 }
 

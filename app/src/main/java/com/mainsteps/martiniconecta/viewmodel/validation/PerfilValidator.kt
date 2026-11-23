@@ -1,12 +1,16 @@
 package com.mainsteps.martiniconecta.viewmodel.validation
 
-import android.util.Patterns
 import com.mainsteps.martiniconecta.model.Division
 import com.mainsteps.martiniconecta.model.Interes
 import com.mainsteps.martiniconecta.model.PerfilUiState
 import com.mainsteps.martiniconecta.model.TamanoNegocio
 
 object PerfilValidator {
+
+    private val correoRegex = Regex(
+        "^[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9-]+(?:\\.[A-Z0-9-]+)+$",
+        RegexOption.IGNORE_CASE,
+    )
 
     fun errorNombre(valor: String): String? {
         if (valor.trim().count { it.isLetter() } < 2) {
@@ -17,7 +21,7 @@ object PerfilValidator {
 
     fun errorCorreo(valor: String): String? {
         val limpio = valor.trim()
-        if (limpio.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(limpio).matches()) {
+        if (limpio.isEmpty() || !correoRegex.matches(limpio)) {
             return "Correo no válido"
         }
         return null
