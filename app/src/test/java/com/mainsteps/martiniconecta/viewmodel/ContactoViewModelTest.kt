@@ -2,8 +2,7 @@ package com.mainsteps.martiniconecta.viewmodel
 
 import com.mainsteps.martiniconecta.data.local.PerfilDao
 import com.mainsteps.martiniconecta.data.local.PerfilEntity
-import com.mainsteps.martiniconecta.data.local.SolicitudDao
-import com.mainsteps.martiniconecta.data.local.SolicitudEntity
+import com.mainsteps.martiniconecta.repository.SolicitudApiFalsa
 import com.mainsteps.martiniconecta.model.Division
 import com.mainsteps.martiniconecta.model.ProductoInteres
 import com.mainsteps.martiniconecta.repository.ContactoRepository
@@ -41,7 +40,7 @@ class ContactoViewModelTest {
     @Test
     fun `fallo al guardar muestra error y conserva formulario`() = runTest {
         val viewModel = ContactoViewModel(
-            contactoRepository = ContactoRepository(SolicitudDaoQueFalla()),
+            contactoRepository = ContactoRepository(SolicitudApiFalsa(fallarAlCrear = true)),
             perfilRepository = PerfilRepository(PerfilDaoVacio()),
             ahora = { 1000L },
         )
@@ -70,14 +69,6 @@ class ContactoViewModelTest {
         assertEquals("Maipú", estado.comuna.valor)
         assertEquals(ProductoInteres.CHOCOLATE_ARIBA, estado.producto.valor)
     }
-}
-
-private class SolicitudDaoQueFalla : SolicitudDao {
-    override suspend fun guardarSolicitud(solicitud: SolicitudEntity): Long {
-        throw RuntimeException("Room")
-    }
-
-    override fun observarSolicitudes(): Flow<List<SolicitudEntity>> = flowOf(emptyList())
 }
 
 private class PerfilDaoVacio : PerfilDao {
