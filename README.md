@@ -167,3 +167,25 @@ Los tests usan JUnit y `kotlinx-coroutines-test`, con dependencias falsas que pe
 ![Reporte de cobertura Kover Debug](docs/evidencias/cobertura-kover-debug.png)
 
 La medición incluye el CRUD de solicitudes de #50 y #51 integrado en `main`, con pruebas de recarga, validación de comuna, cancelación, errores de PUT/DELETE y reintento. El recorrido real con la API está documentado en [las evidencias de #51](docs/evidencias/51-recorrido.md).
+
+## APK firmado
+
+El APK de release se firma con el keystore del equipo, guardado en el repositorio como pide la pauta:
+
+- Keystore: `keystore/martini-conecta.jks` (alias `martiniApp`, validez de 25 años, certificado `CN=Diego Pazos, O=Duoc, L=Santiago, C=CL`).
+- Se generó con Android Studio desde *Build → Generate Signed App Bundle / APK → APK*, eligiendo el keystore, el alias y la variante **release**.
+- El APK queda en `app/build/outputs/apk/release/app-release.apk` (no se versiona; se entrega en AVA).
+- Las contraseñas del keystore no están en el repositorio; se entregan al docente aparte si las solicita.
+
+En `release` se desactivó la optimización R8 (`optimization { enable = false }`): con R8 activo, el APK firmado se cerraba al abrir por un `IllegalAccessError` en clases renombradas. Sin R8, el APK firmado abre y el CRUD contra `martini-api` funciona en el emulador (Pixel 7, API 35).
+
+Verificación de la firma (macOS; en Windows usar `apksigner.bat` dentro de `build-tools`):
+
+```bash
+~/Library/Android/sdk/build-tools/36.0.0/apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
+adb install -r app/build/outputs/apk/release/app-release.apk
+```
+
+![APK release y keystore](docs/evidencias/52-apk-jks.png)
+
+![Firma verificada con apksigner](docs/evidencias/52-apksigner.png)
