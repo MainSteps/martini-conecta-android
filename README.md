@@ -186,6 +186,4 @@ Verificación de la firma (macOS; en Windows usar `apksigner.bat` dentro de `bui
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
-![APK release y keystore](docs/evidencias/52-apk-jks.png)
-
-![Firma verificada con apksigner](docs/evidencias/52-apksigner.png)
+Resultado de la verificación: `Signer #1 certificate DN: C=CL, ST=Quinta Normal, L=Santiago, O=Duoc, CN=Diego Pazos`.
