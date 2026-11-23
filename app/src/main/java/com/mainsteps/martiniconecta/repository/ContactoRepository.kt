@@ -14,4 +14,13 @@ class ContactoRepository(
     suspend fun listarSolicitudes(telefono: String? = null): List<SolicitudContacto> {
         return api.listar(telefono)
     }
+
+    suspend fun actualizarSolicitud(solicitud: SolicitudContacto): SolicitudContacto {
+        return api.actualizar(solicitud.id, solicitud)
+    }
+
+    suspend fun eliminarSolicitud(id: Long) {
+        val respuesta = api.eliminar(id)
+        if (!respuesta.isSuccessful) throw retrofit2.HttpException(respuesta)
+    }
 }

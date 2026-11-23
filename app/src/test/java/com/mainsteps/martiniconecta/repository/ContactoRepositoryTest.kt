@@ -9,6 +9,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
+import retrofit2.HttpException
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 class ContactoRepositoryTest {
 
@@ -48,6 +50,44 @@ class ContactoRepositoryTest {
         assertEquals("+56 9 1234 5678", resultado.single().telefono)
     }
 
+    @Test
+    fun `actualizar envia el id correcto y conserva los cambios`() = runBlocking {
+        val api = SolicitudApiFalsa()
+        val repository = ContactoRepository(api)
+        val id = repository.guardarSolicitud(solicitudEjemplo)
+        val edicion = solicitudEjemplo.copy(id = id, comuna = "Ñuñoa")
+
+        assertEquals(edicion, repository.actualizarSolicitud(edicion))
+        assertEquals(id, api.ultimoIdActualizado)
+        assertEquals(edicion, api.obtener(id))
+    }
+
+    @Test
+    fun `eliminar envia el id y elimina la solicitud`() = runBlocking {
+        val api = SolicitudApiFalsa()
+        val repository = ContactoRepository(api)
+        val id = repository.guardarSolicitud(solicitudEjemplo)
+
+        repository.eliminarSolicitud(id)
+
+        assertEquals(id, api.ultimoIdEliminado)
+        assertTrue(repository.listarSolicitudes().isEmpty())
+    }
+
+    @Test
+    fun `delete no exitoso lanza excepcion y conserva datos`() = runBlocking {
+        val api = SolicitudApiFalsa()
+        val repository = ContactoRepository(api)
+        val id = repository.guardarSolicitud(solicitudEjemplo)
+        api.errorHttpEliminar = true
+
+        val error = runCatching { repository.eliminarSolicitud(id) }.exceptionOrNull()
+
+        assertTrue(error is HttpException)
+        assertEquals(500, (error as HttpException).code())
+        assertEquals(1, repository.listarSolicitudes().size)
+    }
+
     private val solicitudEjemplo = SolicitudContacto(
         nombre = "Ana Pérez",
         telefono = "+56 9 1234 5678",
@@ -66,8 +106,15 @@ class SolicitudApiFalsa(
     private val solicitudes = mutableListOf<SolicitudContacto>()
 
     var ultimoTelefonoListado: String? = null
+    var ultimoIdActualizado: Long? = null
+    var ultimoIdEliminado: Long? = null
+    var fallarAlActualizar = false
+    var fallarAlEliminar = false
+    var errorHttpEliminar = false
+    var vecesListado = 0
 
     override suspend fun listar(telefono: String?): List<SolicitudContacto> {
+        vecesListado++
         if (fallarAlListar) {
             throw RuntimeException("API")
         }
@@ -95,6 +142,8 @@ class SolicitudApiFalsa(
     }
 
     override suspend fun actualizar(id: Long, body: SolicitudContacto): SolicitudContacto {
+        ultimoIdActualizado = id
+        if (fallarAlActualizar) throw RuntimeException("API")
         val indice = solicitudes.indexOfFirst { it.id == id }
         val actualizada = body.copy(id = id)
         solicitudes[indice] = actualizada
@@ -102,6 +151,9 @@ class SolicitudApiFalsa(
     }
 
     override suspend fun eliminar(id: Long): Response<Unit> {
+        ultimoIdEliminado = id
+        if (fallarAlEliminar) throw RuntimeException("API")
+        if (errorHttpEliminar) return Response.error(500, "Error".toResponseBody())
         solicitudes.removeAll { it.id == id }
         return Response.success(Unit)
     }

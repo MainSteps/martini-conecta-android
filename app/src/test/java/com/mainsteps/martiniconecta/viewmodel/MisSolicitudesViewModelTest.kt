@@ -3,6 +3,7 @@ package com.mainsteps.martiniconecta.viewmodel
 import com.mainsteps.martiniconecta.data.local.PerfilDao
 import com.mainsteps.martiniconecta.data.local.PerfilEntity
 import com.mainsteps.martiniconecta.model.Division
+import com.mainsteps.martiniconecta.model.EstadoSolicitud
 import com.mainsteps.martiniconecta.model.Interes
 import com.mainsteps.martiniconecta.model.ProductoInteres
 import com.mainsteps.martiniconecta.model.SolicitudContacto
@@ -134,6 +135,152 @@ class MisSolicitudesViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value is MisSolicitudesUiState.Exito)
+    }
+
+    @Test
+    fun `editar guarda cambios y recarga solicitudes`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val original = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        vm.onEditar(original)
+        vm.onCambiarEdicion(original.copy(comuna = " Ñuñoa ", producto = ProductoInteres.BRAVO_CREM, estado = EstadoSolicitud.CONTACTADO))
+
+        vm.onGuardarEdicion()
+        advanceUntilIdle()
+
+        val estado = vm.uiState.value as MisSolicitudesUiState.Exito
+        assertEquals("Ñuñoa", estado.solicitudes.single().comuna)
+        assertEquals(ProductoInteres.BRAVO_CREM, estado.solicitudes.single().producto)
+        assertEquals(EstadoSolicitud.CONTACTADO, estado.solicitudes.single().estado)
+        assertEquals(null, estado.edicion)
+        assertEquals(2, api.vecesListado)
+        assertEquals("+56 9 1234 5678", api.ultimoTelefonoListado)
+    }
+
+    @Test
+    fun `comuna invalida no envia put`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val original = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        vm.onEditar(original.copy(comuna = " "))
+        vm.onGuardarEdicion()
+        advanceUntilIdle()
+
+        assertEquals("Ingresa tu comuna", (vm.uiState.value as MisSolicitudesUiState.Exito).errorComuna)
+        assertEquals(null, api.ultimoIdActualizado)
+    }
+
+    @Test
+    fun `eliminar confirmado quita el elemento y recarga`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        vm.onConfirmarEliminar(solicitud)
+        vm.onEliminar(solicitud.id)
+        advanceUntilIdle()
+
+        assertEquals(MisSolicitudesUiState.Vacio, vm.uiState.value)
+        assertEquals(solicitud.id, api.ultimoIdEliminado)
+        assertEquals(2, api.vecesListado)
+    }
+
+    @Test
+    fun `cancelar eliminacion no llama delete`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        vm.onConfirmarEliminar(solicitud)
+        vm.onCancelar()
+        vm.onEliminar(solicitud.id)
+        advanceUntilIdle()
+
+        assertEquals(null, api.ultimoIdEliminado)
+        assertEquals(1, (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.size)
+    }
+
+    @Test
+    fun `put fallido conserva lista y permite reintentar`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        api.fallarAlActualizar = true
+        vm.onEditar(solicitud.copy(comuna = "Ñuñoa"))
+        vm.onGuardarEdicion()
+        advanceUntilIdle()
+
+        val estado = vm.uiState.value as MisSolicitudesUiState.Exito
+        assertEquals(listOf(solicitud), estado.solicitudes)
+        assertTrue(estado.mensaje != null)
+        assertEquals(false, estado.procesando)
+        api.fallarAlActualizar = false
+        vm.onGuardarEdicion()
+        advanceUntilIdle()
+        assertEquals("Ñuñoa", (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single().comuna)
+    }
+
+    @Test
+    fun `delete fallido conserva lista y muestra error`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        api.fallarAlEliminar = true
+        vm.onConfirmarEliminar(solicitud)
+        vm.onEliminar(solicitud.id)
+        advanceUntilIdle()
+
+        val estado = vm.uiState.value as MisSolicitudesUiState.Exito
+        assertEquals(listOf(solicitud), estado.solicitudes)
+        assertTrue(estado.mensaje != null)
+        assertEquals(false, estado.procesando)
+    }
+
+    @Test
+    fun `si falla recarga tras put conserva el cambio guardado`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        api.fallarAlListar = true
+        vm.onEditar(solicitud.copy(comuna = "Ñuñoa"))
+        vm.onGuardarEdicion()
+        advanceUntilIdle()
+
+        val estado = vm.uiState.value as MisSolicitudesUiState.Exito
+        assertEquals("Ñuñoa", estado.solicitudes.single().comuna)
+        assertTrue(estado.mensaje != null)
+        assertEquals(null, estado.edicion)
+    }
+
+    @Test
+    fun `delete http fallido conserva solicitud y permite reintentar`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        api.errorHttpEliminar = true
+        vm.onConfirmarEliminar(solicitud)
+        vm.onEliminar(solicitud.id)
+        advanceUntilIdle()
+        assertEquals(listOf(solicitud), (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes)
+        assertTrue((vm.uiState.value as MisSolicitudesUiState.Exito).mensaje != null)
+
+        api.errorHttpEliminar = false
+        vm.onEliminar(solicitud.id)
+        advanceUntilIdle()
+        assertEquals(MisSolicitudesUiState.Vacio, vm.uiState.value)
+    }
+
+    @Test
+    fun `guardar dos veces mientras procesa solo recarga una vez`() = runTest {
+        val (api, vm) = cargarUnaSolicitud()
+        val solicitud = (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single()
+        vm.onEditar(solicitud.copy(comuna = "Ñuñoa"))
+        vm.onGuardarEdicion()
+        vm.onGuardarEdicion()
+        vm.onCancelar()
+        advanceUntilIdle()
+
+        assertEquals(2, api.vecesListado)
+        assertEquals("Ñuñoa", (vm.uiState.value as MisSolicitudesUiState.Exito).solicitudes.single().comuna)
+    }
+
+    private suspend fun cargarUnaSolicitud(): Pair<SolicitudApiFalsa, MisSolicitudesViewModel> {
+        val api = SolicitudApiFalsa()
+        api.crear(solicitudEjemplo)
+        val vm = viewModelConPerfil(ContactoRepository(api), "+56 9 1234 5678")
+        vm.cargar()
+        testDispatcher.scheduler.advanceUntilIdle()
+        return api to vm
     }
 
     private fun viewModelConPerfil(
