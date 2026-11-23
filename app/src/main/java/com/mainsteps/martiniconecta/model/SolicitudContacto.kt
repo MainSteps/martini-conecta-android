@@ -1,5 +1,10 @@
 package com.mainsteps.martiniconecta.model
 
+enum class EstadoSolicitud {
+    PENDIENTE,
+    CONTACTADO,
+}
+
 enum class ProductoInteres(val etiqueta: String) {
     MANTECA_UNIGRAL("Manteca Unigral"),
     MARGARINA_GRAN_MASTER_HOJA("Margarina Gran Master Hoja"),
@@ -18,4 +23,5 @@ data class SolicitudContacto(
     val comuna: String,
     val producto: ProductoInteres,
     val creadaEn: Long,
+    val estado: EstadoSolicitud = EstadoSolicitud.PENDIENTE,
 )

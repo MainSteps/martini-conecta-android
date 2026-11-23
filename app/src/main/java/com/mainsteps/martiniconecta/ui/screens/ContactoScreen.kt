@@ -33,6 +33,7 @@ import com.mainsteps.martiniconecta.viewmodel.ContactoViewModel
 fun ContactoScreen(
     contactoViewModelFactory: ViewModelProvider.Factory,
     onBack: () -> Unit,
+    onOpenMisSolicitudes: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: ContactoViewModel = viewModel(factory = contactoViewModelFactory)
@@ -58,7 +59,7 @@ fun ContactoScreen(
         item {
             ScreenHeader(
                 title = "Quiero que me contacten",
-                subtitle = "Déjanos tus datos y guardaremos tu solicitud en este dispositivo.",
+                subtitle = "Déjanos tus datos y enviaremos tu solicitud al equipo de ventas.",
             )
         }
 
@@ -133,6 +134,17 @@ fun ContactoScreen(
                     .heightIn(min = 48.dp),
             ) {
                 Text(text = if (uiState.enviando) "Guardando…" else "Enviar solicitud")
+            }
+        }
+
+        item {
+            OutlinedButton(
+                onClick = onOpenMisSolicitudes,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp),
+            ) {
+                Text(text = "Mis solicitudes")
             }
         }
 

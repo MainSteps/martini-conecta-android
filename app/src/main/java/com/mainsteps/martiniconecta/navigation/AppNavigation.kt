@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mainsteps.martiniconecta.ui.screens.DetailScreen
 import com.mainsteps.martiniconecta.ui.screens.ContactoScreen
+import com.mainsteps.martiniconecta.ui.screens.MisSolicitudesScreen
 import com.mainsteps.martiniconecta.ui.components.DemoBanner
 import com.mainsteps.martiniconecta.ui.screens.ExploreScreen
 import com.mainsteps.martiniconecta.ui.screens.FavoritosScreen
@@ -38,6 +39,7 @@ fun AppNavigation(
     profileViewModelFactory: ViewModelProvider.Factory,
     favoritosViewModelFactory: ViewModelProvider.Factory,
     contactoViewModelFactory: ViewModelProvider.Factory,
+    misSolicitudesViewModelFactory: ViewModelProvider.Factory,
     inicioViewModelFactory: ViewModelProvider.Factory,
 ) {
     val navController = rememberNavController()
@@ -151,6 +153,16 @@ fun AppNavigation(
             composable(Routes.Contacto.route) {
                 ContactoScreen(
                     contactoViewModelFactory = contactoViewModelFactory,
+                    onBack = { navController.popBackStack() },
+                    onOpenMisSolicitudes = {
+                        navController.navigate(Routes.MisSolicitudes.route)
+                    },
+                )
+            }
+
+            composable(Routes.MisSolicitudes.route) {
+                MisSolicitudesScreen(
+                    misSolicitudesViewModelFactory = misSolicitudesViewModelFactory,
                     onBack = { navController.popBackStack() },
                 )
             }

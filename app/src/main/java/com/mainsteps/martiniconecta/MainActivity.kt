@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mainsteps.martiniconecta.data.local.AppDatabase
+import com.mainsteps.martiniconecta.data.remote.RetrofitClient
 import com.mainsteps.martiniconecta.navigation.AppNavigation
 import com.mainsteps.martiniconecta.repository.PerfilRepository
 import com.mainsteps.martiniconecta.repository.ContactoRepository
@@ -23,6 +24,7 @@ import com.mainsteps.martiniconecta.viewmodel.ProfileViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.FavoritosViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.ContactoViewModelFactory
 import com.mainsteps.martiniconecta.viewmodel.InicioViewModelFactory
+import com.mainsteps.martiniconecta.viewmodel.MisSolicitudesViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -40,11 +42,19 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val contactoRepository by lazy {
+        ContactoRepository(RetrofitClient.solicitudApi)
+    }
+
     private val contactoViewModelFactory by lazy {
         ContactoViewModelFactory(
-            ContactoRepository(AppDatabase.getInstance(applicationContext).solicitudDao()),
+            contactoRepository,
             perfilRepository,
         )
+    }
+
+    private val misSolicitudesViewModelFactory by lazy {
+        MisSolicitudesViewModelFactory(contactoRepository, perfilRepository)
     }
 
     private val inicioViewModelFactory by lazy {
@@ -80,6 +90,7 @@ class MainActivity : ComponentActivity() {
                             profileViewModelFactory = profileViewModelFactory,
                             favoritosViewModelFactory = favoritosViewModelFactory,
                             contactoViewModelFactory = contactoViewModelFactory,
+                            misSolicitudesViewModelFactory = misSolicitudesViewModelFactory,
                             inicioViewModelFactory = inicioViewModelFactory,
                         )
                     }
