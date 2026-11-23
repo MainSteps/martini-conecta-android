@@ -94,10 +94,18 @@ Este repositorio corresponde a un prototipo académico basado en un desafío emp
 
 ## Microservicio `martini-api`
 
-El microservicio Spring Boot del equipo está en [MainSteps/martini-api](https://github.com/MainSteps/martini-api). La conexión de la app se integra mediante las PR #55 y #56; esta rama incorpora la medición de cobertura sobre `main`. Clona el repositorio de la API y, desde su carpeta, inicia el servicio con JDK 17 o superior:
+El microservicio Spring Boot del equipo está en [MainSteps/martini-api](https://github.com/MainSteps/martini-api). La app permite crear, consultar, editar y eliminar solicitudes mediante Retrofit. Clona el repositorio de la API y, desde su carpeta, inicia el servicio con JDK 17 o superior.
+
+Windows:
 
 ```powershell
 .\mvnw.cmd spring-boot:run
+```
+
+macOS/Linux:
+
+```bash
+./mvnw spring-boot:run
 ```
 
 En el PC, la API responde en `http://localhost:8080/`. La integración de Android usa `http://10.0.2.2:8080/` para llegar desde el emulador al puerto `8080` del equipo. Si ejecutas la API en un entorno remoto de VS Code, reenvía su puerto 8080 al PC antes de iniciar la app. Para un dispositivo conectado por ADB, puedes ejecutar el siguiente comando y configurar la URL del cliente como `http://localhost:8080/`:
@@ -109,7 +117,7 @@ adb reverse tcp:8080 tcp:8080
 | Método | Ruta | Uso |
 | --- | --- | --- |
 | `GET` | `/api/solicitudes` | Listar solicitudes |
-| `GET` | `/api/solicitudes?telefono=...` | Filtrar por teléfono; requiere integrar `martini-api#1` |
+| `GET` | `/api/solicitudes?telefono=...` | Filtrar por el teléfono del perfil |
 | `POST` | `/api/solicitudes` | Crear una solicitud |
 | `GET` | `/api/solicitudes/{id}` | Obtener una solicitud |
 | `PUT` | `/api/solicitudes/{id}` | Actualizar una solicitud |
@@ -132,7 +140,9 @@ Ejemplo de respuesta:
 
 ## Tests y cobertura
 
-Ejecuta las pruebas unitarias y genera el reporte HTML de Kover:
+Ejecuta las pruebas unitarias, genera los reportes de Kover y verifica el umbral de cobertura.
+
+Windows:
 
 ```powershell
 .\gradlew.bat testDebugUnitTest
@@ -140,7 +150,15 @@ Ejecuta las pruebas unitarias y genera el reporte HTML de Kover:
 .\gradlew.bat koverXmlReportDebug koverVerifyDebug assembleDebug
 ```
 
-El reporte HTML se genera en `app/build/reports/kover/htmlDebug/index.html` y el XML en `app/build/reports/kover/reportDebug.xml`. La medición del 22/11/2026 sobre `main` (`ed97726`) más los cambios de #53 obtuvo **748 de 797 líneas: 93,85%**, con **41 tests aprobados**, sin fallos ni omitidos. `koverVerifyDebug` exige al menos 80% de cobertura de líneas y pasó junto con `assembleDebug`.
+macOS/Linux:
+
+```bash
+./gradlew testDebugUnitTest
+./gradlew koverHtmlReportDebug
+./gradlew koverXmlReportDebug koverVerifyDebug assembleDebug
+```
+
+El reporte HTML se genera en `app/build/reports/kover/htmlDebug/index.html` y el XML en `app/build/reports/kover/reportDebug.xml`. La medición del 23/11/2026 sobre `main` (`d46a5ba`, con el CRUD completo) más los cambios de #53 obtuvo **796 de 870 líneas: 91,49%**, con **61 tests aprobados**, sin fallos, errores ni omitidos. `koverVerifyDebug` exige al menos 80% de cobertura de líneas y pasó junto con `assembleDebug`.
 
 Kover excluye pantallas, componentes y tema Compose, navegación, `MainActivity`, configuración de Room y sus implementaciones generadas, y factories de ViewModel. Son presentación, infraestructura Android o código generado; las pruebas unitarias miden la lógica de ViewModels, repositorios y validadores. También se excluye `ContactoVentasKt`, que prepara intents Android para abrir aplicaciones externas. Esta medición no acredita pruebas de interfaz ni recorridos en emulador.
 
@@ -148,4 +166,4 @@ Los tests usan JUnit y `kotlinx-coroutines-test`, con dependencias falsas que pe
 
 ![Reporte de cobertura Kover Debug](docs/evidencias/cobertura-kover-debug.png)
 
-La cobertura debe volver a medirse tras integrar #50 y #51, porque añaden lógica de solicitudes. El porcentaje anterior corresponde a la base actual; no incluye esas funcionalidades todavía.
+La medición incluye el CRUD de solicitudes de #50 y #51 integrado en `main`, con pruebas de recarga, validación de comuna, cancelación, errores de PUT/DELETE y reintento. El recorrido real con la API está documentado en [las evidencias de #51](docs/evidencias/51-recorrido.md).
