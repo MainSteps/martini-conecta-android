@@ -18,6 +18,8 @@ App de contenidos técnicos para clientes y emprendedores de panadería, pastele
 - Formulario validado «Quiero que me contacten», con datos precargados desde el perfil.
 - Foto de perfil desde galería o cámara mediante Activity Result APIs y FileProvider.
 - Acciones para compartir una receta y consultar a ventas mediante intents.
+- «Mis solicitudes»: CRUD completo (crear, listar, editar y eliminar) contra el microservicio propio `martini-api` mediante Retrofit, filtrado por el teléfono del perfil.
+- APK de release firmado con el keystore del repositorio.
 - Accesibilidad: tipografía escalable, preferencia de letra grande, contraste, áreas táctiles amplias y semántica para TalkBack.
 
 ## Tecnologías
@@ -28,6 +30,8 @@ App de contenidos técnicos para clientes y emprendedores de panadería, pastele
 - Room con migraciones para persistencia local.
 - Activity Result APIs, Photo Picker, cámara y FileProvider.
 - Coil para mostrar la foto de perfil.
+- Retrofit, Gson y OkHttp para consumir `martini-api` (Spring Boot).
+- Kover para medir la cobertura de pruebas (mínimo 80%).
 - JUnit y kotlinx-coroutines-test para pruebas unitarias.
 
 ## Requisitos
@@ -43,7 +47,8 @@ El proyecto incluye Gradle Wrapper 9.6.0, por lo que no requiere una instalació
 1. Clona el repositorio y ábrelo en Android Studio.
 2. Espera la sincronización de Gradle.
 3. Selecciona un dispositivo o emulador con API 24 o superior.
-4. Ejecuta la configuración `app`.
+4. Levanta `martini-api` (ver la sección [Microservicio `martini-api`](#microservicio-martini-api)) para usar «Mis solicitudes».
+5. Ejecuta la configuración `app`.
 
 También puedes verificar el proyecto desde una terminal en la raíz:
 
